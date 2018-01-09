@@ -4,21 +4,15 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/actMain_toolBar"
-        android:background="#ff252e39"
-        android:layout_width="match_parent"
-        android:layout_height="?actionBarSize">
 
-    </android.support.v7.widget.Toolbar>
     <FrameLayout
-        android:layout_below="@+id/actMain_toolBar"
         android:layout_above="@id/actMain_bottomNavi"
         android:id="@+id/actMain_layout_Frag"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
     <android.support.design.widget.BottomNavigationView
+
         app:menu="@menu/menu_category"
         android:background="#ff252e39"
         android:id="@+id/actMain_bottomNavi"

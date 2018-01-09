@@ -1,16 +1,23 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.appscyclone.themoviedb.fragment.MovieFragment">
 
-    <LinearLayout
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:ignore="UselessParent">
+        <android.support.v7.widget.Toolbar
+            android:background="#ff252e39"
+            android:id="@+id/fragMovie_tbMovie"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"/>
         <FrameLayout
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ff252e39">
@@ -40,10 +47,11 @@
                 app:nts_type="point"
                 app:nts_weight="7dp"/>
         </FrameLayout>
-        <android.support.v4.view.ViewPager
-            android:id="@+id/actMain_viewPager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </android.support.v4.view.ViewPager>
-    </LinearLayout>
-</RelativeLayout>
+    </android.support.design.widget.AppBarLayout>
+    <android.support.v4.view.ViewPager
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:id="@+id/actMain_viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </android.support.v4.view.ViewPager>
+</android.support.design.widget.CoordinatorLayout>

@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.appscyclone.themoviedb.R;
+import com.appscyclone.themoviedb.activity.MainActivity;
 import com.appscyclone.themoviedb.adapter.MovieAdapter;
 import com.appscyclone.themoviedb.model.ItemMovieModel;
 import com.appscyclone.themoviedb.networks.ApiInterface;
@@ -36,36 +37,45 @@ public class NowFragment extends Fragment {
 
     private MovieAdapter mMovieAdapter;
     private List<ItemMovieModel> mMovieList;
-    private boolean isLoading=true;
+    private boolean isLoading = true;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_now, container, false);
-        ButterKnife.bind(this,view);
+        ButterKnife.bind(this, view);
         init();
         return view;
     }
+
     private void init() {
 
-        mMovieList=new ArrayList<>();
-        mMovieAdapter =new MovieAdapter(mMovieList);
-
+        mMovieList = new ArrayList<>();
+        mMovieAdapter = new MovieAdapter(mMovieList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rvListMovie.setLayoutManager(layoutManager);
         rvListMovie.setAdapter(mMovieAdapter);
-        if(isLoading){
-            loadMovie(1);
-        }else {
-            mMovieAdapter.notifyDataSetChanged();
-        }
+        loadMovie(1);
+        mMovieAdapter.setOnItemClickLister(new MovieAdapter.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(View v, int position) {
+                Fragment fragment = new MovieDetailFragment();
+                Bundle bundle = new Bundle();
+                bundle.putInt("id", mMovieList.get(position).getId());
+                fragment.setArguments(bundle);
+                getActivity().getSupportFragmentManager().beginTransaction().addToBackStack("abc").add(R.id.actMain_layout_Frag, fragment).commit();
+                if(getActivity() instanceof MainActivity)
+                    ((MainActivity) getActivity()).setHideBottomBar(true);
+            }
+        });
     }
 
-    private void loadMovie(int page){
-        Map<String,String> mapMovie=new HashMap<>();
-        mapMovie.put(ConstantUtils.PAGE,String.valueOf(page));
-        mapMovie.put(ConstantUtils.LANGUAGE,ConstantUtils.EN_US);
-        ApiInterface apiInterface= ApiUtils.getSOService();
-        Call<JsonObject> call=apiInterface.getPopular("now_playing",mapMovie);
+    private void loadMovie(int page) {
+        Map<String, String> mapMovie = new HashMap<>();
+        mapMovie.put(ConstantUtils.PAGE, String.valueOf(page));
+        mapMovie.put(ConstantUtils.LANGUAGE, ConstantUtils.EN_US);
+        ApiInterface apiInterface = ApiUtils.getSOService();
+        Call<JsonObject> call = apiInterface.getPopular("now_playing", mapMovie);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -74,7 +84,7 @@ public class NowFragment extends Fragment {
                         }.getType());
                 mMovieList.addAll(list);
                 mMovieAdapter.notifyDataSetChanged();
-                isLoading=false;
+                isLoading = false;
 
             }
 

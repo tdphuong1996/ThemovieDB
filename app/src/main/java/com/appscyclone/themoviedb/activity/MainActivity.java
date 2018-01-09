@@ -9,6 +9,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.appscyclone.themoviedb.R;
@@ -22,7 +23,7 @@ import java.lang.reflect.Field;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends ActivityBase {
+public class MainActivity extends ActivityBase  {
     @BindView(R.id.actMain_bottomNavi)
     BottomNavigationView bottomNavi;
 
@@ -87,5 +88,14 @@ public class MainActivity extends ActivityBase {
             Log.e("BottomNav", "Unable to change value of shift mode", e);
         }
     }
+    public void setHideBottomBar(boolean b){
+        if(b){
+            bottomNavi.setVisibility(View.GONE);
+        }else {
+            bottomNavi.setVisibility(View.VISIBLE);
+        }
+
+    }
+
 
 }
