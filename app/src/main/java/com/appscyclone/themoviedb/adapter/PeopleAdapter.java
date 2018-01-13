@@ -1,5 +1,6 @@
 package com.appscyclone.themoviedb.adapter;
 
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.appscyclone.themoviedb.R;
+import com.appscyclone.themoviedb.interfaces.OnClickItemListener;
 import com.appscyclone.themoviedb.model.PeopleModel;
 import com.appscyclone.themoviedb.utils.ConstantUtils;
 import com.squareup.picasso.Picasso;
@@ -16,16 +18,16 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-/**
- * Created by TDP on 09/01/2018.
- */
 
 public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.ViewHolder> {
     private List<PeopleModel> mPeopleList;
+    private OnClickItemListener callBack;
 
-    public PeopleAdapter(List<PeopleModel> mPeopleList) {
+    public PeopleAdapter(List<PeopleModel> mPeopleList, Fragment fragment) {
         this.mPeopleList = mPeopleList;
+       callBack = (OnClickItemListener) fragment;
     }
 
     @Override
@@ -45,15 +47,21 @@ public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.ViewHolder
         return mPeopleList != null ? mPeopleList.size() : 0;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+     class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.itemPeople_ivAvatar)
         ImageView ivAvatar;
         @BindView(R.id.itemPeople_tvName)
         TextView tvName;
 
-        public ViewHolder(View itemView) {
+         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+        @OnClick(R.id.itemPeople_ctContent)
+         void onClickItem(){
+           if(itemView.getId()==R.id.itemPeople_ctContent){
+               callBack.onClickItem(getAdapterPosition());
+           }
         }
     }
 }

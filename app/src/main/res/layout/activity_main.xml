@@ -14,7 +14,7 @@
     <android.support.design.widget.BottomNavigationView
 
         app:menu="@menu/menu_category"
-        android:background="#ff252e39"
+        android:background="@color/colorPrimary"
         android:id="@+id/actMain_bottomNavi"
         app:itemIconTint="@drawable/selector_white"
         app:itemTextColor="@drawable/selector_white"

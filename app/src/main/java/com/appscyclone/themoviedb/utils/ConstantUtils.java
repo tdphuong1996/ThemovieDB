@@ -11,4 +11,5 @@ public class ConstantUtils {
     public static final String IMAGE_URL="https://image.tmdb.org/t/p/w500";
     public static final String BASE_URL_YT="http://www.youtube.com/watch?v=";
 
+    public static String  ID_PEOPLE="idPeople";
 }

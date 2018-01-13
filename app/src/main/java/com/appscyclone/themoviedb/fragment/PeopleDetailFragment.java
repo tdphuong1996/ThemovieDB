@@ -3,14 +3,11 @@ package com.appscyclone.themoviedb.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,21 +16,17 @@ import android.widget.TextView;
 
 import com.appscyclone.themoviedb.R;
 import com.appscyclone.themoviedb.activity.MainActivity;
-import com.appscyclone.themoviedb.activity.PlayVideoActivity;
-import com.appscyclone.themoviedb.model.KeyVideoModel;
-import com.appscyclone.themoviedb.model.MovieDetailModel;
+import com.appscyclone.themoviedb.model.ExternallIDModel;
+import com.appscyclone.themoviedb.model.PeopleDetailModel;
 import com.appscyclone.themoviedb.networks.ApiInterface;
 import com.appscyclone.themoviedb.networks.ApiUtils;
+import com.appscyclone.themoviedb.other.ReadMoreDialog;
 import com.appscyclone.themoviedb.utils.ConstantUtils;
-import com.appscyclone.themoviedb.utils.ConvertNumber;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
-import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -43,49 +36,59 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class PeopleDetailFragment extends Fragment {
 
-public class MovieDetailFragment extends Fragment {
-    @BindView(R.id.fragMovieDetail_tvBuget)
-    TextView tvBuget;
-    @BindView(R.id.fragMovieDetail_tvGenres)
-    TextView tvGenres;
-    @BindView(R.id.fragMovieDetail_tvMark)
-    TextView tvMask;
-    @BindView(R.id.fragMovieDetail_tvName)
+    @BindView(R.id.fragDetailPeople_ivAvatar)
+    ImageView ivAvatar;
+    @BindView(R.id.fragDetailPeople_ivFB)
+    ImageView ivFacebook;
+    @BindView(R.id.fragDetailPeople_ivTW)
+    ImageView ivTwitter;
+    @BindView(R.id.fragDetailPeople_ivIG)
+    ImageView ivInstagram;
+    @BindView(R.id.fragDetailPeople_tvBirthday)
+    TextView tvBirthday;
+    @BindView(R.id.fragDetailPeople_tvGender)
+    TextView tvGender;
+    @BindView(R.id.fragDetailPeople_tvKnownCredits)
+    TextView tvKnownCredits;
+    @BindView(R.id.fragDetailPeople_tvKnownFor)
+    TextView tvKnownFor;
+    @BindView(R.id.fragDetailPeople_tvBiography)
+    TextView tvBiography;
+    @BindView(R.id.fragDetailPeople_tvPlace)
+    TextView tvPlace;
+    @BindView(R.id.fragDetailPeople_tvName)
     TextView tvName;
-    @BindView(R.id.fragMovieDetail_tvOverview)
-    TextView tvOverview;
-    @BindView(R.id.fragMovieDetail_tvRate)
-    TextView tvRate;
-    @BindView(R.id.fragMovieDetail_tvRevenue)
-    TextView tvRevenue;
-    @BindView(R.id.fragMovieDetail_tvRuntime)
-    TextView tvRuntime;
-    @BindView(R.id.fragDetail_imgPoster)
-    ImageView imgPoster;
-    @BindView(R.id.fragDetail_tbDetail)
+    @BindView(R.id.fragDetailPeople_tbDetail)
     Toolbar tbDetail;
 
-    private int mMovieID;
-    private String urlYoutube;
+    private String mContent;
 
-   private FragmentManager fragmentManager;
-    private ContextMenuDialogFragment mMenuDialogFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
+        View view = inflater.inflate(R.layout.fragment_people_detail, container, false);
         ButterKnife.bind(this, view);
         init();
         return view;
     }
 
+
     private void init() {
+        Bundle bundle = getArguments();
+        loadPeopleDetail(bundle.getInt(ConstantUtils.ID_PEOPLE));
+
         ((AppCompatActivity) getActivity()).setSupportActionBar(tbDetail);
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        assert actionBar != null;
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        assert inflater != null;
         @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.view_custom_action_bar, null);
         actionBar.setCustomView(view);
         TextView tvTitle = view.findViewById(R.id.viewCT_tvTitle);
@@ -99,34 +102,24 @@ public class MovieDetailFragment extends Fragment {
             }
         });
         tvTitle.setText(getString(R.string.detail));
-
-        Bundle bundle = getArguments();
-        mMovieID = bundle.getInt("id");
-        loadMovieDetail(mMovieID);
-        loadVideo(mMovieID);
     }
 
-    private void loadMovieDetail(int idMovie) {
+    private void loadPeopleDetail(int idPeople) {
         Map map = new HashMap();
         map.put(ConstantUtils.LANGUAGE, ConstantUtils.EN_US);
         ApiInterface apiInterface = ApiUtils.getSOService();
-        Call<JsonObject> call = apiInterface.getMovieDetail(idMovie, map);
+        Call<JsonObject> call = apiInterface.getPeopleDetail(idPeople, map);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                MovieDetailModel model = new Gson().fromJson(response.body(), MovieDetailModel.class);
-                tvBuget.setText(ConvertNumber.Convert(model.getBudget()));
-                StringBuilder genres = new StringBuilder();
-                for (int i = 0; i < model.getGenres().size(); i++) {
-                    genres.append(model.getGenres().get(i).getName()).append(", ");
-                }
-                tvRate.setText(String.valueOf(model.getVoteAverage()));
-                tvGenres.setText(genres);
-                tvName.setText(model.getTitle());
-                tvOverview.setText(model.getOverview());
-                tvRevenue.setText(ConvertNumber.Convert(model.getRevenue()));
-                tvRuntime.setText(String.valueOf(model.getRuntime()));
-                Picasso.with(getContext()).load(ConstantUtils.IMAGE_URL + model.getBackDropPath()).into(imgPoster);
+                PeopleDetailModel model = new Gson().fromJson(response.body(), PeopleDetailModel.class);
+                tvBirthday.setText(model.getBirthday());
+                mContent = model.getBiography();
+                tvGender.setText(model.convertGender(model.getGender()));
+                tvBiography.setText(mContent);
+                tvPlace.setText(model.getPlaceOfBirth());
+                tvName.setText(model.getName());
+                Picasso.with(getContext()).load(ConstantUtils.IMAGE_URL + model.getProfilePath()).into(ivAvatar);
             }
 
             @Override
@@ -136,21 +129,15 @@ public class MovieDetailFragment extends Fragment {
         });
     }
 
-    private void loadVideo(final int idMovie) {
+    private void loadExternalID(int idPeople) {
         Map map = new HashMap();
         map.put(ConstantUtils.LANGUAGE, ConstantUtils.EN_US);
         ApiInterface apiInterface = ApiUtils.getSOService();
-        Call<JsonObject> call = apiInterface.getVideo(idMovie, map);
+        Call<JsonObject> call = apiInterface.getExternalIDs(idPeople, map);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                List<KeyVideoModel> list = new Gson().fromJson(response.body().get("results").toString(),
-                        new TypeToken<List<KeyVideoModel>>() {
-                        }.getType());
-
-                for (int i = 0; i < list.size(); i++) {
-                    urlYoutube = list.get(i).getKey();
-                }
+                ExternallIDModel model = new Gson().fromJson(response.body(), ExternallIDModel.class);
             }
 
             @Override
@@ -160,14 +147,10 @@ public class MovieDetailFragment extends Fragment {
         });
     }
 
-    @OnClick(R.id.fragMovie_ivPlay)
+    @OnClick(R.id.fragDetailPeople_tvReadMore)
     public void onClick(View view) {
-        if (view.getId() == R.id.fragMovie_ivPlay) {
-           Intent intent=new Intent(getActivity(),PlayVideoActivity.class);
-           intent.putExtra("yt",urlYoutube);
-           startActivity(intent);
-            Log.i("Video", "Video Playing....");
+        if (view.getId() == R.id.fragDetailPeople_tvReadMore) {
+            new ReadMoreDialog(getContext(), mContent).show();
         }
     }
-
 }

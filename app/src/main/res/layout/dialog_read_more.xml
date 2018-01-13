@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:background="@color/colorBlueLight"
+            android:id="@+id/dialogReadMore_tbReadMore"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp">
+
+            <TextView
+                android:layout_marginStart="@dimen/_16sdp"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/biography"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/_16sdp"
+                tools:ignore="RelativeOverlap" />
+
+            <ImageView
+                android:id="@+id/dialogReadMore_ivClose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/_16sdp"
+                android:src="@drawable/ic_close"
+                android:tint="@android:color/white"
+                android:contentDescription="@string/todo" />
+        </RelativeLayout>
+
+    <TextView
+        android:id="@+id/dialogReadMore_tvContent"
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/dialogReadMore_tbReadMore"
+        android:padding="@dimen/_8sdp"
+        android:textColor="@android:color/black" />
+</RelativeLayout>

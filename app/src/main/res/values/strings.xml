@@ -9,4 +9,18 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="mark_as_favorite">MARK AS FAVORITE</string>
+    <string name="known_for">Known For</string>
+    <string name="gender">Gender</string>
+    <string name="known_credits">Known Credits</string>
+    <string name="birthday">Birthday</string>
+    <string name="place_of_birth">Place of Birth</string>
+    <string name="biography">Biography</string>
+    <string name="todo">TODO</string>
+    <string name="read_more">Read more</string>
+    <string name="people">people</string>
+    <string name="detail">DETAIL</string>
+    <string name="player_error">Error initializing YouTube player: %s</string>
+    <string name="runtime">RUNTIME</string>
+    <string name="revenue">REVENUE</string>
+    <string name="buget">BUGET</string>
 </resources>

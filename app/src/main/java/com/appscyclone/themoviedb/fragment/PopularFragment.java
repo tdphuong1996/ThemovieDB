@@ -46,7 +46,6 @@ public class PopularFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_popular, container, false);
         ButterKnife.bind(this, view);
-//        rvListMovie=view.findViewById(R.id.rv_listMovie);
         init();
         return view;
     }

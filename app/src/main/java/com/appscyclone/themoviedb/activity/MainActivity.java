@@ -7,7 +7,6 @@ import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.internal.BottomNavigationMenuView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -36,8 +35,6 @@ public class MainActivity extends ActivityBase  {
     }
 
     private void init() {
-
-
         replaceFragment(new MovieFragment(), R.id.actMain_layout_Frag);
         removeShiftMode(bottomNavi);
         bottomNavi.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -83,9 +80,8 @@ public class MainActivity extends ActivityBase  {
                 item.setChecked(item.getItemData().isChecked());
             }
         } catch (NoSuchFieldException e) {
-            Log.e("BottomNav", "Unable to get shift mode field", e);
+
         } catch (IllegalAccessException e) {
-            Log.e("BottomNav", "Unable to change value of shift mode", e);
         }
     }
     public void setHideBottomBar(boolean b){
@@ -94,8 +90,11 @@ public class MainActivity extends ActivityBase  {
         }else {
             bottomNavi.setVisibility(View.VISIBLE);
         }
-
     }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        setHideBottomBar(false);
+    }
 }

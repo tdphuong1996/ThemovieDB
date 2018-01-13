@@ -10,7 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.appscyclone.themoviedb.R;
+import com.appscyclone.themoviedb.activity.MainActivity;
 import com.appscyclone.themoviedb.adapter.PeopleAdapter;
+import com.appscyclone.themoviedb.interfaces.OnClickItemListener;
 import com.appscyclone.themoviedb.model.PeopleModel;
 import com.appscyclone.themoviedb.networks.ApiInterface;
 import com.appscyclone.themoviedb.networks.ApiUtils;
@@ -31,10 +33,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class PeopleFragment extends Fragment {
+public class PeopleFragment extends Fragment implements OnClickItemListener {
     @BindView(R.id.fragPeople_rvPeopleList)
     RecyclerView rvPeopleList;
-
     private List<PeopleModel> mPeopleList;
     private PeopleAdapter mPeopleAdapter;
 
@@ -48,14 +49,15 @@ public class PeopleFragment extends Fragment {
     }
 
     private void init() {
+
         mPeopleList = new ArrayList<>();
         rvPeopleList.setHasFixedSize(true);
         rvPeopleList.setLayoutManager(new GridLayoutManager(getContext(), 2));
-
-        mPeopleAdapter = new PeopleAdapter(mPeopleList);
-
+        mPeopleAdapter = new PeopleAdapter(mPeopleList,this);
         rvPeopleList.setAdapter(mPeopleAdapter);
         loadPeople();
+
+
     }
 
     private void loadPeople() {
@@ -82,4 +84,14 @@ public class PeopleFragment extends Fragment {
     }
 
 
+    @Override
+    public void onClickItem(int position) {
+        PeopleDetailFragment fragment=new PeopleDetailFragment();
+        Bundle bundle=new Bundle();
+        bundle.putInt(ConstantUtils.ID_PEOPLE,mPeopleList.get(position).getId());
+        fragment.setArguments(bundle);
+        getActivity().getSupportFragmentManager().beginTransaction().addToBackStack("abc").add(R.id.actMain_layout_Frag, fragment).commit();
+        if(getActivity() instanceof MainActivity)
+            ((MainActivity) getActivity()).setHideBottomBar(true);
+    }
 }
