@@ -6,15 +6,12 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-/**
- * Created by TDP on 26/12/2017.
- */
 
-public class RetrofitClient {
+class RetrofitClient {
     private static Retrofit mRetrofit = null;
 
 
-    public static Retrofit getClient(String baseUrl) {
+    static Retrofit getClient(String baseUrl) {
 
         OkHttpClient client;
 

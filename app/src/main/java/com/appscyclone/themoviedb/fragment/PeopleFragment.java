@@ -83,7 +83,6 @@ public class PeopleFragment extends Fragment implements OnClickItemListener {
         });
     }
 
-
     @Override
     public void onClickItem(int position) {
         PeopleDetailFragment fragment=new PeopleDetailFragment();
@@ -92,6 +91,6 @@ public class PeopleFragment extends Fragment implements OnClickItemListener {
         fragment.setArguments(bundle);
         getActivity().getSupportFragmentManager().beginTransaction().addToBackStack("abc").add(R.id.actMain_layout_Frag, fragment).commit();
         if(getActivity() instanceof MainActivity)
-            ((MainActivity) getActivity()).setHideBottomBar(true);
+            ((MainActivity) getActivity()).setHideBottomBar(false);
     }
 }

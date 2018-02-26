@@ -1,18 +1,11 @@
 package com.appscyclone.themoviedb.fragment;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.appscyclone.themoviedb.R;
 import com.appscyclone.themoviedb.adapter.PageAdapter;
@@ -26,8 +19,7 @@ public class MovieFragment extends Fragment {
     NavigationTabStrip NaviSt;
     @BindView(R.id.actMain_viewPager)
     ViewPager viewPager;
-    @BindView(R.id.fragMovie_tbMovie)
-    Toolbar tbMovie;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,17 +31,6 @@ public class MovieFragment extends Fragment {
     }
 
     private void init() {
-        ((AppCompatActivity) getActivity()).setSupportActionBar(tbMovie);
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.view_custom_action_bar, null);
-        actionBar.setCustomView(view);
-        TextView tvTitle = view.findViewById(R.id.viewCT_tvTitle);
-        ImageView ivBack = view.findViewById(R.id.viewCT_ivBack);
-        ivBack.setVisibility(View.INVISIBLE);
-        tvTitle.setText("MOVIE");
-
         PageAdapter pageAdapter = new PageAdapter(getActivity().getSupportFragmentManager());
         pageAdapter.addFragment(new PopularFragment());
         pageAdapter.addFragment(new NowFragment());

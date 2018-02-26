@@ -46,5 +46,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.2'
     implementation files('libs/YouTubeAndroidPlayerApi.jar')
 
-    compile 'com.yalantis:contextmenu:1.0.7'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
 }

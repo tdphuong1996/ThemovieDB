@@ -1,15 +1,11 @@
 package com.appscyclone.themoviedb.fragment;
 
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +26,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
-import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,8 +44,6 @@ public class MovieDetailFragment extends Fragment {
     TextView tvBuget;
     @BindView(R.id.fragMovieDetail_tvGenres)
     TextView tvGenres;
-    @BindView(R.id.fragMovieDetail_tvMark)
-    TextView tvMask;
     @BindView(R.id.fragMovieDetail_tvName)
     TextView tvName;
     @BindView(R.id.fragMovieDetail_tvOverview)
@@ -63,14 +56,12 @@ public class MovieDetailFragment extends Fragment {
     TextView tvRuntime;
     @BindView(R.id.fragDetail_imgPoster)
     ImageView imgPoster;
-    @BindView(R.id.fragDetail_tbDetail)
-    Toolbar tbDetail;
+    @BindView(R.id.fragMovieDetail_tvMark) TextView tvMark;
 
     private int mMovieID;
     private String urlYoutube;
-
-   private FragmentManager fragmentManager;
-    private ContextMenuDialogFragment mMenuDialogFragment;
+    private boolean mFavorite;
+    private SharedPreferences mSharedPreferences;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,34 +71,38 @@ public class MovieDetailFragment extends Fragment {
         init();
         return view;
     }
+    @OnClick({R.id.fragMovie_ivPlay,R.id.viewCT_ivBack})
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.fragMovie_ivPlay:
+                Intent intent=new Intent(getActivity(),PlayVideoActivity.class);
+                intent.putExtra("yt",urlYoutube);
+                startActivity(intent);
+                Log.i("Video", "Video Playing....");
+                break;
+            case R.id.viewCT_ivBack:
+                getActivity().getSupportFragmentManager().popBackStack();
+                ((MainActivity) getContext()).setHideBottomBar(true);
+                break;
+            case R.id.fragMovieDetail_tvMark:
+
+        }
+    }
 
     private void init() {
-        ((AppCompatActivity) getActivity()).setSupportActionBar(tbDetail);
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.view_custom_action_bar, null);
-        actionBar.setCustomView(view);
-        TextView tvTitle = view.findViewById(R.id.viewCT_tvTitle);
-        ImageView ivBack = view.findViewById(R.id.viewCT_ivBack);
-        ivBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().getSupportFragmentManager().popBackStack();
-                if (getActivity() instanceof MainActivity)
-                    ((MainActivity) getActivity()).setHideBottomBar(false);
-            }
-        });
-        tvTitle.setText(getString(R.string.detail));
-
         Bundle bundle = getArguments();
         mMovieID = bundle.getInt("id");
+        mSharedPreferences= getContext().getSharedPreferences(ConstantUtils.ACCOUNT_ID, Context.MODE_PRIVATE);
         loadMovieDetail(mMovieID);
+        String sessionID=mSharedPreferences.getString(ConstantUtils.SESSION_ID,"");
+        String guestSessionID=mSharedPreferences.getString(ConstantUtils.GUEST_SESSION_ID,"");
+        getAccountState(sessionID,guestSessionID);
         loadVideo(mMovieID);
+
     }
 
     private void loadMovieDetail(int idMovie) {
-        Map map = new HashMap();
+        Map<String,String> map =new HashMap<>();
         map.put(ConstantUtils.LANGUAGE, ConstantUtils.EN_US);
         ApiInterface apiInterface = ApiUtils.getSOService();
         Call<JsonObject> call = apiInterface.getMovieDetail(idMovie, map);
@@ -137,7 +132,7 @@ public class MovieDetailFragment extends Fragment {
     }
 
     private void loadVideo(final int idMovie) {
-        Map map = new HashMap();
+        Map<String,String> map =new HashMap<>();
         map.put(ConstantUtils.LANGUAGE, ConstantUtils.EN_US);
         ApiInterface apiInterface = ApiUtils.getSOService();
         Call<JsonObject> call = apiInterface.getVideo(idMovie, map);
@@ -147,7 +142,6 @@ public class MovieDetailFragment extends Fragment {
                 List<KeyVideoModel> list = new Gson().fromJson(response.body().get("results").toString(),
                         new TypeToken<List<KeyVideoModel>>() {
                         }.getType());
-
                 for (int i = 0; i < list.size(); i++) {
                     urlYoutube = list.get(i).getKey();
                 }
@@ -159,15 +153,35 @@ public class MovieDetailFragment extends Fragment {
             }
         });
     }
+    private void markFavorite(){
+        Map<String,String> mapFavorite =new HashMap<>();
+        mapFavorite.put(ConstantUtils.SESSION_ID,mSharedPreferences.getString(ConstantUtils.SESSION_ID,""));
+        Map<String,String> mapBody=new HashMap<>();
+        mapBody.put(ConstantUtils.MEDIA_TYPE,ConstantUtils.MOVIE);
+        mapBody.put(ConstantUtils.MEDIA_ID,"ddd");
+        //mapBody.put(ConstantUtils.FAVORITE,)
+    }
 
-    @OnClick(R.id.fragMovie_ivPlay)
-    public void onClick(View view) {
-        if (view.getId() == R.id.fragMovie_ivPlay) {
-           Intent intent=new Intent(getActivity(),PlayVideoActivity.class);
-           intent.putExtra("yt",urlYoutube);
-           startActivity(intent);
-            Log.i("Video", "Video Playing....");
-        }
+    private void getAccountState(String sessionID,String guestSessionID){
+        Map<String,String> mapAccountSate=new HashMap<>();
+        mapAccountSate.put(ConstantUtils.SESSION_ID,sessionID);
+        mapAccountSate.put(ConstantUtils.GUEST_SESSION_ID,guestSessionID);
+
+        ApiInterface apiInterface=ApiUtils.getSOService();
+        Call<JsonObject> call=apiInterface.getAccountSates(mMovieID,mapAccountSate);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                 mFavorite=response.body().getAsJsonObject().get(ConstantUtils.FAVORITE).getAsBoolean();
+                 tvMark.setText(mFavorite?getString(R.string.remove_form_favorite):getString(R.string.mark_as_favorite));
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
+
     }
 
 }

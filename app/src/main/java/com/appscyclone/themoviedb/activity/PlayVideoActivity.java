@@ -17,8 +17,6 @@ import butterknife.ButterKnife;
 public class PlayVideoActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
     @BindView(R.id.youtube_view)
     YouTubePlayerView youTubeView;
-
-
     private static final int RECOVERY_REQUEST = 1;
 
     @Override

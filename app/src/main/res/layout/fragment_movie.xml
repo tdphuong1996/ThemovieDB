@@ -11,13 +11,19 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:ignore="UselessParent">
-        <android.support.v7.widget.Toolbar
-            android:background="#ff252e39"
-            android:id="@+id/fragMovie_tbMovie"
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"/>
         <FrameLayout
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize">
+            <TextView
+                android:gravity="center"
+                android:textSize="18sp"
+                android:textColor="@color/colorBlueLight"
+                android:text="@string/movie"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </FrameLayout>
+        <FrameLayout
+            app:layout_scrollFlags="scroll|enterAlways"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ff252e39">

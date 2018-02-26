@@ -7,20 +7,18 @@
     android:orientation="vertical"
     tools:context="com.appscyclone.themoviedb.fragment.PeopleFragment">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/fragPeople_tbPeople"
+    <FrameLayout
+        android:background="@color/colorPrimary"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:background="@color/colorPrimary">
+        android:layout_height="?actionBarSize">
         <TextView
-           android:gravity="center"
-            android:textSize="@dimen/_15sdp"
+            android:gravity="center"
+            android:textSize="18sp"
             android:textColor="@color/colorBlueLight"
             android:text="@string/people"
-            android:fontFamily="@font/moon"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </android.support.v7.widget.Toolbar>
+            android:layout_height="match_parent" />
+    </FrameLayout>
 
     <ImageView
         android:layout_width="match_parent"

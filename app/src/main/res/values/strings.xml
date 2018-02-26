@@ -1,14 +1,13 @@
 <resources>
     <string name="app_name">The movie DB</string>
-    <string name="username">Username</string>
+    <string name="username">User name</string>
     <string name="password">Password</string>
     <string name="login">LOGIN</string>
-    <string name="sign_up_via_website_themoviedb_org">Sign up via website themoviedb.org</string>
+    <string name="sign_up_via_website_themoviedb_org"><u>Sign up via website themoviedb.org</u></string>
     <string name="or">OR</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="mark_as_favorite">MARK AS FAVORITE</string>
     <string name="known_for">Known For</string>
     <string name="gender">Gender</string>
     <string name="known_credits">Known Credits</string>
@@ -17,10 +16,17 @@
     <string name="biography">Biography</string>
     <string name="todo">TODO</string>
     <string name="read_more">Read more</string>
-    <string name="people">people</string>
+    <string name="people">PEOPLE</string>
     <string name="detail">DETAIL</string>
     <string name="player_error">Error initializing YouTube player: %s</string>
     <string name="runtime">RUNTIME</string>
     <string name="revenue">REVENUE</string>
     <string name="buget">BUGET</string>
+    <string name="movie">MOVIE</string>
+    <string name="logging_in_please_wait">Logging in please wait</string>
+    <string name="sign_in">SIGN IN</string>
+    <string name="please_input">Please input Username and Password</string>
+    <string name="login_failed">Login failed</string>
+    <string name="remove_form_favorite">REMOVE FROM FAVORITE</string>
+    <string name="mark_as_favorite">MARK AS FAVORITE</string>
 </resources>
