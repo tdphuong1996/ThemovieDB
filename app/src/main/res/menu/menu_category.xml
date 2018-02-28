@@ -19,6 +19,6 @@
     <item
 
         app:showAsAction="always|withText"
-        android:id="@+id/menu_more"
-        android:title="More"/>
+        android:id="@+id/menu_user"
+        android:title="User"/>
 </menu>

@@ -54,4 +54,10 @@ public class PlayVideoActivity extends YouTubeBaseActivity implements YouTubePla
     protected YouTubePlayer.Provider getYouTubePlayerProvider() {
         return youTubeView;
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        finish();
+    }
 }

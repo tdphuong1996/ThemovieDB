@@ -22,7 +22,6 @@ public class ReadMoreDialog extends Dialog {
     private String mContent;
     public ReadMoreDialog(@NonNull Context context,String content) {
         super(context);
-
         setCancelable(false);
         this.mContent=content;
     }

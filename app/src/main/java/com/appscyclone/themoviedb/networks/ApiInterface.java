@@ -1,5 +1,6 @@
 package com.appscyclone.themoviedb.networks;
 
+import com.appscyclone.themoviedb.model.MarkFavoriteModel;
 import com.appscyclone.themoviedb.utils.ConstantUtils;
 import com.google.gson.JsonObject;
 
@@ -48,7 +49,7 @@ public interface ApiInterface {
     Call<JsonObject> getAccount(@QueryMap Map<String,String> options);
 
     @POST("account/{account_id}/favorite"+ConstantUtils.API_KEY)
-    Call<JsonObject> addFavorite(@Path("account_id") int id, @QueryMap Map<String,String> options, @Body Map<String,String> body);
+    Call<JsonObject> addFavorite(@Path("account_id") int id, @QueryMap Map<String,String> options, @Body MarkFavoriteModel model);
 
     @GET("movie/{movie_id}/account_states"+ConstantUtils.API_KEY)
     Call<JsonObject> getAccountSates(@Path("movie_id") int id,@QueryMap Map<String,String> options);
@@ -56,6 +57,8 @@ public interface ApiInterface {
     @GET("authentication/guest_session/new"+ConstantUtils.API_KEY)
     Call<JsonObject> getGuestSessionId();
 
+    @GET("account/{account_id}/favorite/movies"+ConstantUtils.API_KEY)
+    Call<JsonObject> getFavorite(@Path("account_id") int id,@QueryMap Map<String,String> options );
 
 
 }

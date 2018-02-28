@@ -49,15 +49,12 @@ public class PeopleFragment extends Fragment implements OnClickItemListener {
     }
 
     private void init() {
-
         mPeopleList = new ArrayList<>();
         rvPeopleList.setHasFixedSize(true);
         rvPeopleList.setLayoutManager(new GridLayoutManager(getContext(), 2));
         mPeopleAdapter = new PeopleAdapter(mPeopleList,this);
         rvPeopleList.setAdapter(mPeopleAdapter);
         loadPeople();
-
-
     }
 
     private void loadPeople() {

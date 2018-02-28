@@ -42,8 +42,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends ActivityBase {
-    private static String ACCOUNT = "accountID";
+public class MainActivity extends ActivityBase implements  BottomNavigationView.OnNavigationItemSelectedListener{
+
     @BindView(R.id.actMain_bottomNavi)
     BottomNavigationView bottomNavi;
 
@@ -59,41 +59,22 @@ public class MainActivity extends ActivityBase {
     }
 
     private void init() {
+        mSharedPreferences = getSharedPreferences(ConstantUtils.ACCOUNT_ID, Context.MODE_PRIVATE);
         Intent intent = getIntent();
         mSessionID = intent.getStringExtra(ConstantUtils.SESSION);
         mGuestSessionId=intent.getStringExtra(ConstantUtils.GUEST_SESSION_ID);
-        getAccount();
+        if(mSessionID!=null){
+            SharedPreferences.Editor editor=mSharedPreferences.edit();
+            editor.putString(ConstantUtils.SESSION_ID,mSessionID);
+            editor.apply();
+        }
         replaceFragment(new MovieFragment(), R.id.actMain_layout_Frag);
         removeShiftMode(bottomNavi);
-        bottomNavi.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment fragment = null;
-                switch (item.getItemId()) {
-                    case R.id.menu_movie:
-                        fragment = new MovieFragment();
-                        break;
-                    case R.id.menu_people:
-                        fragment = new PeopleFragment();
-                        break;
-                    case R.id.menu_favorite:
-                        fragment = new FavoriteFragment();
-                        break;
-                    case R.id.menu_more:
-                        Toast.makeText(MainActivity.this, "more", Toast.LENGTH_SHORT).show();
-                        break;
-                }
-                if (fragment != null) {
-                    replaceFragment(fragment, R.id.actMain_layout_Frag);
-                }
-                return true;
-            }
-        });
+        bottomNavi.setOnNavigationItemSelectedListener(this);
 
         String[] permissions = new String[]{
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA
         };
         List<String> listPermissionsNeeded = new ArrayList<>();
         for (String permission : permissions) {
@@ -115,19 +96,17 @@ public class MainActivity extends ActivityBase {
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                mSharedPreferences = getSharedPreferences(ACCOUNT, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = mSharedPreferences.edit();
                 AccountModel accountModel = new Gson().fromJson(response.body(), AccountModel.class);
                 editor.putInt(ConstantUtils.ACCOUNT_ID, accountModel.getId());
                 editor.putString(ConstantUtils.USER_NAME, accountModel.getUsername());
-                editor.putString( ConstantUtils.SESSION_ID,mSessionID);
                 editor.putString(ConstantUtils.GUEST_SESSION_ID,mGuestSessionId);
                 editor.apply();
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-
+                Toast.makeText(MainActivity.this,getString(R.string.error), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -148,9 +127,8 @@ public class MainActivity extends ActivityBase {
                 //noinspection RestrictedApi
                 item.setChecked(item.getItemData().isChecked());
             }
-        } catch (NoSuchFieldException e) {
+        } catch (NoSuchFieldException | IllegalAccessException ignored) {
 
-        } catch (IllegalAccessException e) {
         }
     }
 
@@ -158,11 +136,43 @@ public class MainActivity extends ActivityBase {
         bottomNavi.setVisibility(b ? View.VISIBLE : View.GONE);
     }
 
-
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         setHideBottomBar(false);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        String accountID= mSharedPreferences.getString(ConstantUtils.SESSION_ID,"0");
+       if(accountID.equals("0")){
+          startActivity(new Intent(MainActivity.this,LoginActivity.class));
+       }else {
+           getAccount();
+       }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Fragment fragment = null;
+        switch (item.getItemId()) {
+            case R.id.menu_movie:
+                fragment = new MovieFragment();
+                break;
+            case R.id.menu_people:
+                fragment = new PeopleFragment();
+                break;
+            case R.id.menu_favorite:
+                fragment = new FavoriteFragment();
+                break;
+            case R.id.menu_user:
+                Toast.makeText(MainActivity.this, "more", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        if (fragment != null) {
+            replaceFragment(fragment, R.id.actMain_layout_Frag);
+        }
+        return true;
     }
 }

@@ -1,10 +1,12 @@
 package com.appscyclone.themoviedb.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,7 +16,7 @@ import com.appscyclone.themoviedb.model.AuthModel;
 import com.appscyclone.themoviedb.model.GuestSessionIdModel;
 import com.appscyclone.themoviedb.networks.ApiInterface;
 import com.appscyclone.themoviedb.networks.ApiUtils;
-import com.appscyclone.themoviedb.other.LoggingDialog;
+import com.appscyclone.themoviedb.other.ProcessDialog;
 import com.appscyclone.themoviedb.utils.ConstantUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -40,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private String mToken, mSession,mGuestSessionId;
     private boolean isCheckLogin = false;
-    private LoggingDialog mLoggingDialog;
+    private ProcessDialog mLoggingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,18 +54,24 @@ public class LoginActivity extends AppCompatActivity {
         getGuestSessionId();
     }
 
-
-    @OnClick(R.id.actLogin_tvLogin)
-    public void onLogin() {
-     String user=etUsername.getText().toString().trim();
-     String pass=etPassword.getText().toString().trim();
-     if(!TextUtils.isEmpty(user)&& !TextUtils.isEmpty(pass)){
-         mLoggingDialog=  new LoggingDialog(this);
-         mLoggingDialog.show();
-         checkLogIn(etUsername.getText().toString(), etPassword.getText().toString());
-     }else {
-         Toast.makeText(this,getString( R.string.please_input), Toast.LENGTH_SHORT).show();
-     }
+    @OnClick({R.id.actLogin_tvLogin,R.id.actLogin_tvVia})
+    public void onLogin(View view) {
+        switch (view.getId()){
+            case R.id.actLogin_tvLogin:
+                String user=etUsername.getText().toString().trim();
+                String pass=etPassword.getText().toString().trim();
+                if(!TextUtils.isEmpty(user)&& !TextUtils.isEmpty(pass)){
+                    mLoggingDialog=  new ProcessDialog(this,getString(R.string.logging_in_please_wait));
+                    mLoggingDialog.show();
+                    checkLogIn(etUsername.getText().toString(), etPassword.getText().toString());
+                }else {
+                    Toast.makeText(this,getString( R.string.please_input), Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.id.actLogin_tvVia:
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.themoviedb.org/account/signup"));
+                startActivity(browserIntent);
+        }
     }
 
     private void initView() {
@@ -72,9 +80,9 @@ public class LoginActivity extends AppCompatActivity {
 
     public void checkLogIn(String user, String pass) {
         final Map<String,String> map = new HashMap<>();
-        map.put("username", user);
-        map.put("password", pass);
-        map.put("request_token", mToken);
+        map.put(ConstantUtils.USER_NAME, user);
+        map.put(ConstantUtils.PASS_WORD, pass);
+        map.put(ConstantUtils.REQUEST_TOKEN, mToken);
         final ApiInterface apiInterface = ApiUtils.getSOService();
         Call<JsonObject> call = apiInterface.checkLogin(map);
         call.enqueue(new Callback<JsonObject>() {
@@ -94,6 +102,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, getString(R.string.error), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -109,6 +118,7 @@ public class LoginActivity extends AppCompatActivity {
             }
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, getString(R.string.error), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -132,6 +142,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, getString(R.string.error), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -147,7 +158,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-
+                Toast.makeText(LoginActivity.this, getString(R.string.error), Toast.LENGTH_SHORT).show();
             }
         });
     }

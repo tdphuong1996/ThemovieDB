@@ -7,10 +7,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.appscyclone.themoviedb.R;
 import com.appscyclone.themoviedb.activity.MainActivity;
 import com.appscyclone.themoviedb.adapter.MovieAdapter;
+import com.appscyclone.themoviedb.interfaces.OnClickItemListener;
 import com.appscyclone.themoviedb.model.ItemMovieModel;
 import com.appscyclone.themoviedb.networks.ApiInterface;
 import com.appscyclone.themoviedb.networks.ApiUtils;
@@ -31,12 +33,16 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class TopRatedFragment extends Fragment {
-    @BindView(R.id.fragTopRate_rvListMovie)
+public class TopRatedFragment extends Fragment implements OnClickItemListener {
+    @BindView(R.id.viewRv)
     RecyclerView rvListMovie;
+    @BindView(R.id.viewRv_pbLoadMore)
+    ProgressBar pbLoadMore;
 
     private MovieAdapter mMovieAdapter;
     private List<ItemMovieModel> mMovieList;
+    private int mPage =1;
+    private boolean isLoading=false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -48,28 +54,37 @@ public class TopRatedFragment extends Fragment {
 
     private void init() {
         mMovieList = new ArrayList<>();
-        mMovieAdapter = new MovieAdapter(mMovieList);
+        mMovieAdapter = new MovieAdapter(mMovieList,this);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rvListMovie.setLayoutManager(layoutManager);
         rvListMovie.setAdapter(mMovieAdapter);
+        loadMovie(mPage);
 
-        loadMovie(1);
-        mMovieAdapter.setOnItemClickLister(new MovieAdapter.OnItemSelectedListener() {
+        //-------Load more-------------------------
+        RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+            int pastVisiblesItems, visibleItemCount, totalItemCount;
+
             @Override
-            public void onItemSelected(View v, int position) {
-                Fragment fragment = new MovieDetailFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt("id", mMovieList.get(position).getId());
-                fragment.setArguments(bundle);
-                getActivity().getSupportFragmentManager().beginTransaction().addToBackStack("abc").add(R.id.actMain_layout_Frag, fragment).commit();
-                if(getActivity() instanceof MainActivity)
-                    ((MainActivity) getActivity()).setHideBottomBar(false);
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                visibleItemCount = layoutManager.getChildCount();
+                totalItemCount = layoutManager.getItemCount();
+                pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
 
+                if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+
+                    if (!isLoading) {
+                        mPage++;
+                        loadMovie(mPage);
+                        isLoading = true;
+                        pbLoadMore.setVisibility(View.GONE);
+                    } else pbLoadMore.setVisibility(View.VISIBLE);
+
+                }
             }
-        });
-
-
+        };
+        rvListMovie.addOnScrollListener(onScrollListener);
     }
 
     private void loadMovie(int page) {
@@ -86,6 +101,8 @@ public class TopRatedFragment extends Fragment {
                         }.getType());
                 mMovieList.addAll(list);
                 mMovieAdapter.notifyDataSetChanged();
+                isLoading=false;
+                pbLoadMore.setVisibility(View.GONE);
 
             }
 
@@ -96,4 +113,15 @@ public class TopRatedFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onClickItem(int position) {
+        Fragment fragment = new MovieDetailFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("id", mMovieList.get(position).getId());
+        fragment.setArguments(bundle);
+        getActivity().getSupportFragmentManager().beginTransaction().addToBackStack("abc").add(R.id.actMain_layout_Frag, fragment).commit();
+        if(getActivity() instanceof MainActivity)
+            ((MainActivity) getActivity()).setHideBottomBar(false);
+
+    }
 }

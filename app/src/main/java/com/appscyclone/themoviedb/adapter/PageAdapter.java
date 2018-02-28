@@ -4,27 +4,49 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import java.util.ArrayList;
+import com.appscyclone.themoviedb.fragment.NowFragment;
+import com.appscyclone.themoviedb.fragment.PopularFragment;
+import com.appscyclone.themoviedb.fragment.TopRatedFragment;
 
 public class PageAdapter extends FragmentStatePagerAdapter {
-    private ArrayList<Fragment> fragmentArrayList = new ArrayList<>();
-
-    public PageAdapter(FragmentManager fm) {
-        super(fm);
+    public PageAdapter(FragmentManager fragmentManager) {
+        super(fragmentManager);
     }
-
     @Override
     public Fragment getItem(int position) {
-        return fragmentArrayList.get(position);
+        Fragment frag=null;
+        switch (position){
+            case 0:
+                frag = new PopularFragment();
+                break;
+            case 1:
+                frag = new NowFragment();
+                break;
+            case 2:
+                frag = new TopRatedFragment();
+                break;
+        }
+        return frag;
     }
 
     @Override
     public int getCount() {
-        return fragmentArrayList != null ? fragmentArrayList.size() : 0;
+        return 3;
     }
-
-    public void addFragment(Fragment fragment) {
-        fragmentArrayList.add(fragment);
+    @Override
+    public CharSequence getPageTitle(int position) {
+        String title = "";
+        switch (position){
+            case 0:
+                title = "POPULAR";
+                break;
+            case 1:
+                title = "NOW";
+                break;
+            case 2:
+                title = "TOP RATED";
+                break;
+        }
+        return title;
     }
-
 }

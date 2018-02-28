@@ -12,14 +12,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.appscyclone.themoviedb.R;
 import com.appscyclone.themoviedb.activity.MainActivity;
 import com.appscyclone.themoviedb.activity.PlayVideoActivity;
 import com.appscyclone.themoviedb.model.KeyVideoModel;
+import com.appscyclone.themoviedb.model.MarkFavoriteModel;
 import com.appscyclone.themoviedb.model.MovieDetailModel;
 import com.appscyclone.themoviedb.networks.ApiInterface;
 import com.appscyclone.themoviedb.networks.ApiUtils;
+import com.appscyclone.themoviedb.other.ProcessDialog;
 import com.appscyclone.themoviedb.utils.ConstantUtils;
 import com.appscyclone.themoviedb.utils.ConvertNumber;
 import com.google.gson.Gson;
@@ -59,9 +62,10 @@ public class MovieDetailFragment extends Fragment {
     @BindView(R.id.fragMovieDetail_tvMark) TextView tvMark;
 
     private int mMovieID;
-    private String urlYoutube;
+    private String urlYoutube,mSessionID,mGuestSessionID;
     private boolean mFavorite;
     private SharedPreferences mSharedPreferences;
+    private ProcessDialog mProcessDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,7 +75,7 @@ public class MovieDetailFragment extends Fragment {
         init();
         return view;
     }
-    @OnClick({R.id.fragMovie_ivPlay,R.id.viewCT_ivBack})
+    @OnClick({R.id.fragMovie_ivPlay,R.id.viewCT_ivBack,R.id.fragMovieDetail_tvMark})
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.fragMovie_ivPlay:
@@ -85,6 +89,7 @@ public class MovieDetailFragment extends Fragment {
                 ((MainActivity) getContext()).setHideBottomBar(true);
                 break;
             case R.id.fragMovieDetail_tvMark:
+                markFavorite();
 
         }
     }
@@ -94,11 +99,12 @@ public class MovieDetailFragment extends Fragment {
         mMovieID = bundle.getInt("id");
         mSharedPreferences= getContext().getSharedPreferences(ConstantUtils.ACCOUNT_ID, Context.MODE_PRIVATE);
         loadMovieDetail(mMovieID);
-        String sessionID=mSharedPreferences.getString(ConstantUtils.SESSION_ID,"");
-        String guestSessionID=mSharedPreferences.getString(ConstantUtils.GUEST_SESSION_ID,"");
-        getAccountState(sessionID,guestSessionID);
+         mSessionID=mSharedPreferences.getString(ConstantUtils.SESSION_ID,"");
+         mGuestSessionID=mSharedPreferences.getString(ConstantUtils.GUEST_SESSION_ID,"");
+        getAccountState(mSessionID,mGuestSessionID);
         loadVideo(mMovieID);
-
+        mProcessDialog=new ProcessDialog(getContext(),getString(R.string.loading));
+        mProcessDialog.show();
     }
 
     private void loadMovieDetail(int idMovie) {
@@ -122,6 +128,7 @@ public class MovieDetailFragment extends Fragment {
                 tvRevenue.setText(ConvertNumber.Convert(model.getRevenue()));
                 tvRuntime.setText(String.valueOf(model.getRuntime()));
                 Picasso.with(getContext()).load(ConstantUtils.IMAGE_URL + model.getBackDropPath()).into(imgPoster);
+                mProcessDialog.dismiss();
             }
 
             @Override
@@ -154,12 +161,26 @@ public class MovieDetailFragment extends Fragment {
         });
     }
     private void markFavorite(){
-        Map<String,String> mapFavorite =new HashMap<>();
+        final Map<String,String> mapFavorite =new HashMap<>();
         mapFavorite.put(ConstantUtils.SESSION_ID,mSharedPreferences.getString(ConstantUtils.SESSION_ID,""));
-        Map<String,String> mapBody=new HashMap<>();
-        mapBody.put(ConstantUtils.MEDIA_TYPE,ConstantUtils.MOVIE);
-        mapBody.put(ConstantUtils.MEDIA_ID,"ddd");
-        //mapBody.put(ConstantUtils.FAVORITE,)
+        MarkFavoriteModel markFavoriteModel =new MarkFavoriteModel(ConstantUtils.MOVIE,mMovieID,!mFavorite);
+
+        ApiInterface apiInterface=ApiUtils.getSOService();
+        Call<JsonObject> call =apiInterface.addFavorite(mMovieID,mapFavorite,markFavoriteModel);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                String statusMessage=response.body().getAsJsonObject().get("status_message").getAsString();
+                Toast.makeText(getContext(), statusMessage, Toast.LENGTH_SHORT).show();
+                mFavorite = !mFavorite;
+                getAccountState(mSessionID,mGuestSessionID);
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
     }
 
     private void getAccountState(String sessionID,String guestSessionID){

@@ -16,7 +16,7 @@
             android:id="@+id/fragMovieDetail_tvMark"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/shape_text_view_primary"
+            android:background="@drawable/selector_state_pressed_blue_light"
             android:padding="@dimen/_8sdp"
             android:text="@string/mark_as_favorite"
             android:textAlignment="center"
@@ -28,9 +28,10 @@
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
         <TextView
+            android:padding="@dimen/_8sdp"
             android:id="@+id/fragMovieDetail_tvOverview"
             android:layout_width="0dp"
-            android:layout_height="93dp"
+            android:layout_height="@dimen/_100sdp"
             android:layout_marginTop="16dp"
             android:textColor="@android:color/black"
             app:layout_constraintEnd_toEndOf="parent"

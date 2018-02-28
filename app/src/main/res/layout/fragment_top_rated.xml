@@ -3,9 +3,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.appscyclone.themoviedb.fragment.TopRatedFragment">
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/fragTopRate_rvListMovie"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
+    <include layout="@layout/view_recycler_view"/>
 </FrameLayout>

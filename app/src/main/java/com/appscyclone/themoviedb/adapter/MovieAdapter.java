@@ -1,5 +1,6 @@
 package com.appscyclone.themoviedb.adapter;
 
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.appscyclone.themoviedb.R;
+import com.appscyclone.themoviedb.interfaces.OnClickItemListener;
 import com.appscyclone.themoviedb.model.ItemMovieModel;
 import com.appscyclone.themoviedb.utils.ConstantUtils;
 import com.squareup.picasso.Picasso;
@@ -16,15 +18,17 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static java.lang.String.valueOf;
 
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
     private List<ItemMovieModel> mMovieList;
-    private OnItemSelectedListener mListener;
-    public MovieAdapter(List<ItemMovieModel> mMovieList) {
+    private OnClickItemListener mCallBack;
+    public MovieAdapter(List<ItemMovieModel> mMovieList, Fragment fragment) {
         this.mMovieList = mMovieList;
+        mCallBack= (OnClickItemListener) fragment;
     }
 
     @Override
@@ -72,19 +76,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         ViewHolder(final View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mListener.onItemSelected(view,getAdapterPosition());
-                }
-            });
+        }
+        @OnClick(R.id.clItemMovie)
+        public void onClick(){
+            mCallBack.onClickItem(getAdapterPosition());
         }
 
     }
-    public interface OnItemSelectedListener {
-        void onItemSelected(View v, int position);
-    }
-    public void setOnItemClickLister(OnItemSelectedListener mListener) {
-        this.mListener = mListener;
-    }
+
 }
