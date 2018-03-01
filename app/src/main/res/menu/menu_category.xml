@@ -17,7 +17,6 @@
         android:id="@+id/menu_favorite"
         android:title="Favorite"/>
     <item
-
         app:showAsAction="always|withText"
         android:id="@+id/menu_user"
         android:title="User"/>

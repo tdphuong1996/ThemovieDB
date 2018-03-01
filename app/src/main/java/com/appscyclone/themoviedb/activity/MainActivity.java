@@ -23,6 +23,7 @@ import com.appscyclone.themoviedb.base.ActivityBase;
 import com.appscyclone.themoviedb.fragment.FavoriteFragment;
 import com.appscyclone.themoviedb.fragment.MovieFragment;
 import com.appscyclone.themoviedb.fragment.PeopleFragment;
+import com.appscyclone.themoviedb.fragment.UsersFragment;
 import com.appscyclone.themoviedb.model.AccountModel;
 import com.appscyclone.themoviedb.networks.ApiInterface;
 import com.appscyclone.themoviedb.networks.ApiUtils;
@@ -167,7 +168,7 @@ public class MainActivity extends ActivityBase implements  BottomNavigationView.
                 fragment = new FavoriteFragment();
                 break;
             case R.id.menu_user:
-                Toast.makeText(MainActivity.this, "more", Toast.LENGTH_SHORT).show();
+                fragment=new UsersFragment();
                 break;
         }
         if (fragment != null) {

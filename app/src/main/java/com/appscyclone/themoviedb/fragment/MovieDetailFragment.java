@@ -25,10 +25,10 @@ import com.appscyclone.themoviedb.networks.ApiUtils;
 import com.appscyclone.themoviedb.other.ProcessDialog;
 import com.appscyclone.themoviedb.utils.ConstantUtils;
 import com.appscyclone.themoviedb.utils.ConvertNumber;
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.List;
@@ -127,7 +127,7 @@ public class MovieDetailFragment extends Fragment {
                 tvOverview.setText(model.getOverview());
                 tvRevenue.setText(ConvertNumber.Convert(model.getRevenue()));
                 tvRuntime.setText(String.valueOf(model.getRuntime()));
-                Picasso.with(getContext()).load(ConstantUtils.IMAGE_URL + model.getBackDropPath()).into(imgPoster);
+                Glide.with(getContext()).load(ConstantUtils.IMAGE_URL + model.getBackDropPath()).into(imgPoster);
                 mProcessDialog.dismiss();
             }
 

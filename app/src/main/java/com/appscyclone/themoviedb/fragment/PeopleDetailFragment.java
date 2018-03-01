@@ -16,9 +16,9 @@ import com.appscyclone.themoviedb.networks.ApiInterface;
 import com.appscyclone.themoviedb.networks.ApiUtils;
 import com.appscyclone.themoviedb.other.ReadMoreDialog;
 import com.appscyclone.themoviedb.utils.ConstantUtils;
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -98,7 +98,7 @@ public class PeopleDetailFragment extends Fragment {
                 tvBiography.setText(mContent);
                 tvPlace.setText(model.getPlaceOfBirth());
                 tvName.setText(model.getName());
-                Picasso.with(getContext()).load(ConstantUtils.IMAGE_URL + model.getProfilePath()).into(ivAvatar);
+                Glide.with(getContext()).load(ConstantUtils.IMAGE_URL + model.getProfilePath()).into(ivAvatar);
             }
 
             @Override

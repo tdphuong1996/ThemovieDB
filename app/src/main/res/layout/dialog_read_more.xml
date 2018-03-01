@@ -35,9 +35,8 @@
 
     <TextView
         android:id="@+id/dialogReadMore_tvContent"
-
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/dialogReadMore_tbReadMore"
         android:padding="@dimen/_8sdp"
         android:textColor="@android:color/black" />

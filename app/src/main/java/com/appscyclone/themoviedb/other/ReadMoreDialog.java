@@ -22,7 +22,6 @@ public class ReadMoreDialog extends Dialog {
     private String mContent;
     public ReadMoreDialog(@NonNull Context context,String content) {
         super(context);
-        setCancelable(false);
         this.mContent=content;
     }
 
@@ -32,6 +31,8 @@ public class ReadMoreDialog extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_read_more);
         ButterKnife.bind(this);
+
+
         tvContent.setText(mContent);
     }
 

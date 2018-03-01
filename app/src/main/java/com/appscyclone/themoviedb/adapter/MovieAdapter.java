@@ -12,7 +12,7 @@ import com.appscyclone.themoviedb.R;
 import com.appscyclone.themoviedb.interfaces.OnClickItemListener;
 import com.appscyclone.themoviedb.model.ItemMovieModel;
 import com.appscyclone.themoviedb.utils.ConstantUtils;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -51,7 +51,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
            genres.append(String.valueOf(items.getGenreIds().get(i)));
        }
         holder.tvGenres.setText(String.valueOf(genres));
-        Picasso.with(holder.itemView.getContext())
+        Glide.with(holder.itemView.getContext())
                 .load(ConstantUtils.IMAGE_URL + items.getPosterPath())
                 .into(holder.imgPoster);
     }
