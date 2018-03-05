@@ -16,7 +16,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.appscyclone.themoviedb.R;
 import com.appscyclone.themoviedb.base.ActivityBase;
@@ -107,7 +106,6 @@ public class MainActivity extends ActivityBase implements  BottomNavigationView.
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                Toast.makeText(MainActivity.this,getString(R.string.error), Toast.LENGTH_SHORT).show();
             }
         });
     }

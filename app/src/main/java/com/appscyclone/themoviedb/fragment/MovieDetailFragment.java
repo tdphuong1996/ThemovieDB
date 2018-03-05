@@ -4,32 +4,45 @@ package com.appscyclone.themoviedb.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appscyclone.themoviedb.R;
 import com.appscyclone.themoviedb.activity.MainActivity;
-import com.appscyclone.themoviedb.activity.PlayVideoActivity;
+import com.appscyclone.themoviedb.adapter.ReviewsAdapter;
 import com.appscyclone.themoviedb.model.KeyVideoModel;
 import com.appscyclone.themoviedb.model.MarkFavoriteModel;
 import com.appscyclone.themoviedb.model.MovieDetailModel;
+import com.appscyclone.themoviedb.model.ReviewModel;
 import com.appscyclone.themoviedb.networks.ApiInterface;
 import com.appscyclone.themoviedb.networks.ApiUtils;
 import com.appscyclone.themoviedb.other.ProcessDialog;
 import com.appscyclone.themoviedb.utils.ConstantUtils;
-import com.appscyclone.themoviedb.utils.ConvertNumber;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,29 +56,43 @@ import retrofit2.Response;
 
 
 public class MovieDetailFragment extends Fragment {
-    @BindView(R.id.fragMovieDetail_tvBuget)
-    TextView tvBuget;
-    @BindView(R.id.fragMovieDetail_tvGenres)
-    TextView tvGenres;
-    @BindView(R.id.fragMovieDetail_tvName)
+
+    @BindView(R.id.fragMovieDetails_collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbar;
+    @BindView(R.id.fragMovieDetails_tvName)
     TextView tvName;
-    @BindView(R.id.fragMovieDetail_tvOverview)
-    TextView tvOverview;
-    @BindView(R.id.fragMovieDetail_tvRate)
-    TextView tvRate;
-    @BindView(R.id.fragMovieDetail_tvRevenue)
-    TextView tvRevenue;
-    @BindView(R.id.fragMovieDetail_tvRuntime)
-    TextView tvRuntime;
-    @BindView(R.id.fragDetail_imgPoster)
-    ImageView imgPoster;
-    @BindView(R.id.fragMovieDetail_tvMark) TextView tvMark;
+    @BindView(R.id.fragMovieDetails_tvYear)
+    TextView tvYear;
+    @BindView(R.id.fragMovieDetails_tvRating)
+    TextView tvRating;
+    @BindView(R.id.fragMovieDetail_tvDescription)
+    TextView tvDescription;
+    @BindView(R.id.trailers)
+    LinearLayout llTrailer;
+    @BindView(R.id.trailers_container)
+    HorizontalScrollView hlTrailerContent;
+    @BindView(R.id.reviews_label)
+    TextView tvReview;
+    @BindView(R.id.trailers_label)
+    TextView llReviewsContainer;
+    @BindView(R.id.toolbar)
+    @Nullable
+    Toolbar toolbar;
+    @BindView(R.id.fragMovieDetails_ivPoster)
+    ImageView ivPoster;
+    @BindView(R.id.fragMovieDetails_rvListReviews)
+    RecyclerView rvListReviews;
+    @BindView(R.id.fragMovieDetail_fabFavorite)
+    FloatingActionButton fabFavorite;
 
     private int mMovieID;
-    private String urlYoutube,mSessionID,mGuestSessionID;
+    private String urlYoutube, mSessionID, mGuestSessionID;
     private boolean mFavorite;
     private SharedPreferences mSharedPreferences;
     private ProcessDialog mProcessDialog;
+
+    private ReviewsAdapter mReviewsAdapter;
+    private List<ReviewModel> mReviewList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,40 +102,67 @@ public class MovieDetailFragment extends Fragment {
         init();
         return view;
     }
-    @OnClick({R.id.fragMovie_ivPlay,R.id.viewCT_ivBack,R.id.fragMovieDetail_tvMark})
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.fragMovie_ivPlay:
-                Intent intent=new Intent(getActivity(),PlayVideoActivity.class);
-                intent.putExtra("yt",urlYoutube);
-                startActivity(intent);
-                Log.i("Video", "Video Playing....");
-                break;
-            case R.id.viewCT_ivBack:
-                getActivity().getSupportFragmentManager().popBackStack();
-                ((MainActivity) getContext()).setHideBottomBar(true);
-                break;
-            case R.id.fragMovieDetail_tvMark:
-                markFavorite();
 
-        }
+    @OnClick({R.id.fragMovieDetail_fabFavorite})
+        public void onClick(View view) {
+            switch (view.getId()) {
+                case R.id.fragMovieDetail_fabFavorite:
+                    markFavorite();
+                    break;
+                default:
+                    break;
+            }
     }
 
     private void init() {
+        setToolbar();
         Bundle bundle = getArguments();
         mMovieID = bundle.getInt("id");
-        mSharedPreferences= getContext().getSharedPreferences(ConstantUtils.ACCOUNT_ID, Context.MODE_PRIVATE);
+        mSharedPreferences = getContext().getSharedPreferences(ConstantUtils.ACCOUNT_ID, Context.MODE_PRIVATE);
         loadMovieDetail(mMovieID);
-         mSessionID=mSharedPreferences.getString(ConstantUtils.SESSION_ID,"");
-         mGuestSessionID=mSharedPreferences.getString(ConstantUtils.GUEST_SESSION_ID,"");
-        getAccountState(mSessionID,mGuestSessionID);
+        mSessionID = mSharedPreferences.getString(ConstantUtils.SESSION_ID, "");
+        mGuestSessionID = mSharedPreferences.getString(ConstantUtils.GUEST_SESSION_ID, "");
+        getAccountState(mSessionID, mGuestSessionID);
         loadVideo(mMovieID);
-        mProcessDialog=new ProcessDialog(getContext(),getString(R.string.loading));
+        mProcessDialog = new ProcessDialog(getContext(), getString(R.string.loading));
+        mReviewList = new ArrayList<>();
+        mReviewsAdapter = new ReviewsAdapter(mReviewList);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        rvListReviews.setLayoutManager(layoutManager);
+        rvListReviews.setAdapter(mReviewsAdapter);
+        loadReview();
         mProcessDialog.show();
+
+    }
+
+    private void setToolbar() {
+        collapsingToolbar.setContentScrimColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+        collapsingToolbar.setTitle(getString(R.string.movie_details));
+        collapsingToolbar.setCollapsedTitleTextAppearance(R.style.CollapsedToolbar);
+        collapsingToolbar.setExpandedTitleTextAppearance(R.style.ExpandedToolbar);
+        collapsingToolbar.setTitleEnabled(true);
+
+        if (toolbar != null) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
+            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+            }
+        } else {
+            // Don't inflate. Tablet is in landscape mode.
+        }
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().popBackStack();
+                    ((MainActivity) getContext()).setHideBottomBar(true);
+            }
+        });
     }
 
     private void loadMovieDetail(int idMovie) {
-        Map<String,String> map =new HashMap<>();
+        Map<String, String> map = new HashMap<>();
         map.put(ConstantUtils.LANGUAGE, ConstantUtils.EN_US);
         ApiInterface apiInterface = ApiUtils.getSOService();
         Call<JsonObject> call = apiInterface.getMovieDetail(idMovie, map);
@@ -116,18 +170,13 @@ public class MovieDetailFragment extends Fragment {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 MovieDetailModel model = new Gson().fromJson(response.body(), MovieDetailModel.class);
-                tvBuget.setText(ConvertNumber.Convert(model.getBudget()));
-                StringBuilder genres = new StringBuilder();
-                for (int i = 0; i < model.getGenres().size(); i++) {
-                    genres.append(model.getGenres().get(i).getName()).append(", ");
-                }
-                tvRate.setText(String.valueOf(model.getVoteAverage()));
-                tvGenres.setText(genres);
+
+                tvRating.setText(String.format(getString(R.string.rating), String.valueOf(model.getVoteAverage())));
+                tvYear.setText(String.format(getString(R.string.release_date), model.getReleaseDate()));
                 tvName.setText(model.getTitle());
-                tvOverview.setText(model.getOverview());
-                tvRevenue.setText(ConvertNumber.Convert(model.getRevenue()));
-                tvRuntime.setText(String.valueOf(model.getRuntime()));
-                Glide.with(getContext()).load(ConstantUtils.IMAGE_URL + model.getBackDropPath()).into(imgPoster);
+                tvDescription.setText(model.getOverview());
+
+                Glide.with(getContext()).load(ConstantUtils.IMAGE_URL + model.getBackDropPath()).into(ivPoster);
                 mProcessDialog.dismiss();
             }
 
@@ -139,18 +188,39 @@ public class MovieDetailFragment extends Fragment {
     }
 
     private void loadVideo(final int idMovie) {
-        Map<String,String> map =new HashMap<>();
+        Map<String, String> map = new HashMap<>();
         map.put(ConstantUtils.LANGUAGE, ConstantUtils.EN_US);
         ApiInterface apiInterface = ApiUtils.getSOService();
         Call<JsonObject> call = apiInterface.getVideo(idMovie, map);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                List<KeyVideoModel> list = new Gson().fromJson(response.body().get("results").toString(),
+                List<KeyVideoModel> videoModels = new Gson().fromJson(response.body().get("results").toString(),
                         new TypeToken<List<KeyVideoModel>>() {
                         }.getType());
-                for (int i = 0; i < list.size(); i++) {
-                    urlYoutube = list.get(i).getKey();
+                LayoutInflater inflater = getActivity().getLayoutInflater();
+                RequestOptions options = new RequestOptions()
+                        .placeholder(R.color.colorPrimary)
+                        .centerCrop()
+                        .override(150, 150);
+
+                int size = videoModels.size();
+                for (int i = 0; i < size; i++) {
+                    View thumbContainer = inflater.inflate(R.layout.view_video, llTrailer, false);
+                    ImageView thumbView = ButterKnife.findById(thumbContainer, R.id.video_thumb);
+                    thumbView.setTag(R.id.glide_tag, videoModels.get(i).getUrl());
+                    thumbView.requestLayout();
+                    thumbView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            onThumbnailClick(view);
+                        }
+                    });
+                    Glide.with(getContext())
+                            .load(videoModels.get(i).getThumbnailUrl())
+                            .apply(options)
+                            .into(thumbView);
+                    llTrailer.addView(thumbContainer);
                 }
             }
 
@@ -160,20 +230,41 @@ public class MovieDetailFragment extends Fragment {
             }
         });
     }
-    private void markFavorite(){
-        final Map<String,String> mapFavorite =new HashMap<>();
-        mapFavorite.put(ConstantUtils.SESSION_ID,mSharedPreferences.getString(ConstantUtils.SESSION_ID,""));
-        MarkFavoriteModel markFavoriteModel =new MarkFavoriteModel(ConstantUtils.MOVIE,mMovieID,!mFavorite);
 
-        ApiInterface apiInterface=ApiUtils.getSOService();
-        Call<JsonObject> call =apiInterface.addFavorite(mMovieID,mapFavorite,markFavoriteModel);
+    private void loadReview() {
+        ApiInterface apiInterface = ApiUtils.getSOService();
+        Call<JsonObject> call = apiInterface.getReviews(mMovieID);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                String statusMessage=response.body().getAsJsonObject().get("status_message").getAsString();
+                List<ReviewModel> list = new Gson().fromJson(response.body().get("results").toString(),
+                        new TypeToken<List<ReviewModel>>() {
+                        }.getType());
+                mReviewList.addAll(list);
+                mReviewsAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void markFavorite() {
+        final Map<String, String> mapFavorite = new HashMap<>();
+        mapFavorite.put(ConstantUtils.SESSION_ID, mSharedPreferences.getString(ConstantUtils.SESSION_ID, ""));
+        MarkFavoriteModel markFavoriteModel = new MarkFavoriteModel(ConstantUtils.MOVIE, mMovieID, !mFavorite);
+
+        ApiInterface apiInterface = ApiUtils.getSOService();
+        Call<JsonObject> call = apiInterface.addFavorite(mMovieID, mapFavorite, markFavoriteModel);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                String statusMessage = response.body().getAsJsonObject().get("status_message").getAsString();
                 Toast.makeText(getContext(), statusMessage, Toast.LENGTH_SHORT).show();
                 mFavorite = !mFavorite;
-                getAccountState(mSessionID,mGuestSessionID);
+                getAccountState(mSessionID, mGuestSessionID);
             }
 
             @Override
@@ -183,18 +274,20 @@ public class MovieDetailFragment extends Fragment {
         });
     }
 
-    private void getAccountState(String sessionID,String guestSessionID){
-        Map<String,String> mapAccountSate=new HashMap<>();
-        mapAccountSate.put(ConstantUtils.SESSION_ID,sessionID);
-        mapAccountSate.put(ConstantUtils.GUEST_SESSION_ID,guestSessionID);
+    private void getAccountState(String sessionID, String guestSessionID) {
+        Map<String, String> mapAccountSate = new HashMap<>();
+        mapAccountSate.put(ConstantUtils.SESSION_ID, sessionID);
+        mapAccountSate.put(ConstantUtils.GUEST_SESSION_ID, guestSessionID);
 
-        ApiInterface apiInterface=ApiUtils.getSOService();
-        Call<JsonObject> call=apiInterface.getAccountSates(mMovieID,mapAccountSate);
+        ApiInterface apiInterface = ApiUtils.getSOService();
+        Call<JsonObject> call = apiInterface.getAccountSates(mMovieID, mapAccountSate);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                 mFavorite=response.body().getAsJsonObject().get(ConstantUtils.FAVORITE).getAsBoolean();
-                 tvMark.setText(mFavorite?getString(R.string.remove_form_favorite):getString(R.string.mark_as_favorite));
+                mFavorite = response.body().getAsJsonObject().get(ConstantUtils.FAVORITE).getAsBoolean();
+                fabFavorite.setImageDrawable(mFavorite ?
+                        ContextCompat.getDrawable(getContext(), R.drawable.ic_favorite_white_24dp) :
+                        ContextCompat.getDrawable(getContext(), R.drawable.ic_favorite_border_white_24dp));
             }
 
             @Override
@@ -202,7 +295,11 @@ public class MovieDetailFragment extends Fragment {
 
             }
         });
-
     }
-
+    private void onThumbnailClick(View view)
+    {
+        String videoUrl = (String) view.getTag(R.id.glide_tag);
+        Intent playVideoIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(videoUrl));
+        startActivity(playVideoIntent);
+    }
 }

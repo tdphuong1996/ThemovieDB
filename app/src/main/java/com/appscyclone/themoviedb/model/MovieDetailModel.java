@@ -27,14 +27,13 @@ public class MovieDetailModel {
     private double voteAverage;
     @SerializedName("backdrop_path")
     private String backDropPath;
+    @SerializedName( "release_date")
+    private String releaseDate;
 
     public String getBackDropPath() {
         return backDropPath;
     }
 
-    public int getBudget() {
-        return budget;
-    }
 
 
 
@@ -44,37 +43,12 @@ public class MovieDetailModel {
 
 
 
-    public String getOriginalTitle() {
-        return originalTitle;
-    }
-
-    public void setOriginalTitle(String originalTitle) {
-        this.originalTitle = originalTitle;
-    }
 
     public String getOverview() {
         return overview;
     }
 
-    public void setOverview(String overview) {
-        this.overview = overview;
-    }
 
-    public int  getRevenue() {
-        return revenue;
-    }
-
-    public void setRevenue(Integer revenue) {
-        this.revenue = revenue;
-    }
-
-    public Integer getRuntime() {
-        return runtime;
-    }
-
-    public void setRuntime(Integer runtime) {
-        this.runtime = runtime;
-    }
 
     public String getTitle() {
         return title;
@@ -86,6 +60,10 @@ public class MovieDetailModel {
 
     public double getVoteAverage() {
         return voteAverage;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
     }
 
     public void setVoteAverage(Double voteAverage) {

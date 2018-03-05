@@ -25,4 +25,7 @@ public class ConstantUtils {
 
     public static String  ID_PEOPLE="idPeople";
     public static final String REQUEST_TOKEN = "request_token";
+
+    public static final String YOUTUBE_VIDEO_URL = "http://www.youtube.com/watch?v=%1$s";
+    public static final String YOUTUBE_THUMBNAIL_URL = "http://img.youtube.com/vi/%1$s/0.jpg";
 }

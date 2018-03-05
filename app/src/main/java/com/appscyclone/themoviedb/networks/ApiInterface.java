@@ -60,5 +60,8 @@ public interface ApiInterface {
     @GET("account/{account_id}/favorite/movies"+ConstantUtils.API_KEY)
     Call<JsonObject> getFavorite(@Path("account_id") int id,@QueryMap Map<String,String> options );
 
+    @GET("movie/{movie_id}/reviews"+ConstantUtils.API_KEY)
+    Call<JsonObject> getReviews(@Path("movie_id") int idMovie);
+
 
 }
