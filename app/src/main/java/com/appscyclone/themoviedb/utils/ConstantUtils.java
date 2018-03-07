@@ -2,13 +2,14 @@ package com.appscyclone.themoviedb.utils;
 
 
 
+
 public class ConstantUtils {
     public static final String API_KEY = "?api_key=ee8cf966d22254270f6faa1948ecf3fc";
     public static final String API_YT_KEY="AIzaSyAPfh9ACMulyvfQyoIgDxYcuVNcJ6M3oLI";
     public static final String PAGE="page";
     public static final String LANGUAGE="language";
     public static final String EN_US="en-US";
-    public static final String IMAGE_URL="https://image.tmdb.org/t/p/w500";
+    public static final String IMAGE_URL="http://image.tmdb.org/t/p/w780";
 //    public static final String ERROR_LOGIN="Invalid username and/or password: You did not provide a valid login.";
     public static final String ACCOUNT_ID = "accountID";
     public static final String USER_NAME = "username";

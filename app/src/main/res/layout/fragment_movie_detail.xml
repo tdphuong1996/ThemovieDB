@@ -134,6 +134,7 @@
                 android:textColor="@android:color/white"
                 android:visibility="visible" />
             <android.support.v7.widget.RecyclerView
+                android:layout_marginTop="@dimen/_8sdp"
                 android:id="@+id/fragMovieDetails_rvListReviews"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>

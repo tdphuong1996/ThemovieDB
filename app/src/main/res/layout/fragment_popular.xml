@@ -2,8 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black"
+    android:background="@color/warmGrey"
     tools:context="com.appscyclone.themoviedb.fragment.PopularFragment">
 
     <include layout="@layout/view_recycler_view"/>
+
 </RelativeLayout>

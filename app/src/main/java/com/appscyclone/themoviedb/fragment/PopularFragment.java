@@ -12,7 +12,7 @@ import android.widget.ProgressBar;
 
 import com.appscyclone.themoviedb.R;
 import com.appscyclone.themoviedb.activity.MainActivity;
-import com.appscyclone.themoviedb.adapter.MovieAdapter;
+import com.appscyclone.themoviedb.adapter.MoviesAdapter;
 import com.appscyclone.themoviedb.interfaces.OnClickItemListener;
 import com.appscyclone.themoviedb.model.ItemMovieModel;
 import com.appscyclone.themoviedb.networks.ApiInterface;
@@ -40,7 +40,7 @@ public class PopularFragment extends Fragment implements OnClickItemListener {
     @BindView(R.id.viewRv_pbLoadMore)
     ProgressBar pbLoadMore;
 
-    private MovieAdapter mMovieAdapter;
+    private MoviesAdapter mMoviesAdapter;
     private List<ItemMovieModel> mMovieList;
     private int mPage=1;
     private boolean isLoading=false;
@@ -57,10 +57,10 @@ public class PopularFragment extends Fragment implements OnClickItemListener {
     private void init() {
 
         mMovieList = new ArrayList<>();
-        mMovieAdapter = new MovieAdapter(mMovieList,this);
+        mMoviesAdapter = new MoviesAdapter(mMovieList,this);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rvListMovie.setLayoutManager(layoutManager);
-        rvListMovie.setAdapter(mMovieAdapter);
+        rvListMovie.setAdapter(mMoviesAdapter);
         loadMovie(mPage);
 
         //-------Load more-------------------------
@@ -102,7 +102,7 @@ public class PopularFragment extends Fragment implements OnClickItemListener {
                         new TypeToken<List<ItemMovieModel>>() {
                         }.getType());
                 mMovieList.addAll(list);
-                mMovieAdapter.notifyDataSetChanged();
+                mMoviesAdapter.notifyDataSetChanged();
                 isLoading=false;
                 pbLoadMore.setVisibility(View.GONE);
             }
