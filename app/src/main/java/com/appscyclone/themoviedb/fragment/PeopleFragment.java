@@ -16,6 +16,7 @@ import com.appscyclone.themoviedb.interfaces.OnClickItemListener;
 import com.appscyclone.themoviedb.model.PeopleModel;
 import com.appscyclone.themoviedb.networks.ApiInterface;
 import com.appscyclone.themoviedb.networks.ApiUtils;
+import com.appscyclone.themoviedb.other.LoadingDialog;
 import com.appscyclone.themoviedb.utils.ConstantUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -38,6 +39,7 @@ public class PeopleFragment extends Fragment implements OnClickItemListener {
     RecyclerView rvPeopleList;
     private List<PeopleModel> mPeopleList;
     private PeopleAdapter mPeopleAdapter;
+    private LoadingDialog mLoadingDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,6 +57,8 @@ public class PeopleFragment extends Fragment implements OnClickItemListener {
         mPeopleAdapter = new PeopleAdapter(mPeopleList,this);
         rvPeopleList.setAdapter(mPeopleAdapter);
         loadPeople();
+        mLoadingDialog=new LoadingDialog(getContext());
+        mLoadingDialog.show();
     }
 
     private void loadPeople() {
@@ -71,6 +75,7 @@ public class PeopleFragment extends Fragment implements OnClickItemListener {
                         }.getType());
                 mPeopleList.addAll(list);
                 mPeopleAdapter.notifyDataSetChanged();
+                mLoadingDialog.dismiss();
             }
 
             @Override

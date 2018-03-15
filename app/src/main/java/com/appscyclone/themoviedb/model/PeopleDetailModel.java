@@ -2,11 +2,15 @@ package com.appscyclone.themoviedb.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by TDP on 11/01/2018.
  */
 
-public class PeopleDetailModel {
+public class PeopleDetailModel implements Serializable {
+    @SerializedName("id")
+    private int id;
 
     @SerializedName("birthday")
     private String birthday;
@@ -47,5 +51,9 @@ public class PeopleDetailModel {
 
     public String convertGender(int gender) {
         return gender == 1 ? "Female" : "Male";
+    }
+
+    public int getId() {
+        return id;
     }
 }

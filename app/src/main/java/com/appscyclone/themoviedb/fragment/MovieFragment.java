@@ -9,17 +9,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.appscyclone.themoviedb.R;
+import com.appscyclone.themoviedb.activity.MainActivity;
 import com.appscyclone.themoviedb.adapter.PageAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-public class MovieFragment extends Fragment {
+public class MovieFragment extends Fragment   {
     @BindView(R.id.fragMovie_tabLayout)
     TabLayout tabLayout;
     @BindView(R.id.fragMovie_viewPager)
     ViewPager viewPager;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -30,8 +31,20 @@ public class MovieFragment extends Fragment {
         return view;
     }
 
+    @OnClick(R.id.fragMovie_ivSearch)
+    public void onClick(){
+        getActivity().getSupportFragmentManager().beginTransaction().addToBackStack("abcd").add(R.id.actMain_layout_Frag, new SearchFragment()).commit();
+        if(getActivity() instanceof MainActivity)
+            ((MainActivity) getActivity()).setHideBottomBar(false);
+
+
+
+    }
     private void init() {
         PageAdapter pageAdapter = new PageAdapter(getActivity().getSupportFragmentManager());
+        pageAdapter.addFragment(new PopularFragment(),"POPULAR");
+        pageAdapter.addFragment(new NowFragment(),"NOW");
+        pageAdapter.addFragment(new TopRatedFragment(),"TOP RATED");
         viewPager.setAdapter(pageAdapter);
         tabLayout.setupWithViewPager(viewPager);
     }

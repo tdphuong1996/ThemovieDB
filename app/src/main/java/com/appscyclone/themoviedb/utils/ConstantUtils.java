@@ -23,8 +23,13 @@ public class ConstantUtils {
     public static final String SORT_BY = "sort_by";
     public static final String CREATED_AT = "created_at.desc";
     public static final String PASS_WORD = "password";
+    public static final String ADULT = "include_adult";
+    public static final boolean IS_ADULT = true;
+    public static final String QUERY = "query";
+
 
     public static String  ID_PEOPLE="idPeople";
+    public static String INFO_PEOPLE="info";
     public static final String REQUEST_TOKEN = "request_token";
 
     public static final String YOUTUBE_VIDEO_URL = "http://www.youtube.com/watch?v=%1$s";

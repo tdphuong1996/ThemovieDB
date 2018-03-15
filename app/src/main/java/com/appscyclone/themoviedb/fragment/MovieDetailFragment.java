@@ -34,7 +34,7 @@ import com.appscyclone.themoviedb.model.MovieDetailModel;
 import com.appscyclone.themoviedb.model.ReviewModel;
 import com.appscyclone.themoviedb.networks.ApiInterface;
 import com.appscyclone.themoviedb.networks.ApiUtils;
-import com.appscyclone.themoviedb.other.ProcessDialog;
+import com.appscyclone.themoviedb.other.LoadingDialog;
 import com.appscyclone.themoviedb.utils.ConstantUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -89,7 +89,7 @@ public class MovieDetailFragment extends Fragment {
     private String urlYoutube, mSessionID, mGuestSessionID;
     private boolean mFavorite;
     private SharedPreferences mSharedPreferences;
-    private ProcessDialog mProcessDialog;
+    private LoadingDialog mLoadingDialog;
 
     private ReviewsAdapter mReviewsAdapter;
     private List<ReviewModel> mReviewList;
@@ -124,14 +124,14 @@ public class MovieDetailFragment extends Fragment {
         mGuestSessionID = mSharedPreferences.getString(ConstantUtils.GUEST_SESSION_ID, "");
         getAccountState(mSessionID, mGuestSessionID);
         loadVideo(mMovieID);
-        mProcessDialog = new ProcessDialog(getContext(), getString(R.string.loading));
+        mLoadingDialog = new LoadingDialog(getContext());
         mReviewList = new ArrayList<>();
         mReviewsAdapter = new ReviewsAdapter(mReviewList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         rvListReviews.setLayoutManager(layoutManager);
         rvListReviews.setAdapter(mReviewsAdapter);
         loadReview();
-        mProcessDialog.show();
+        mLoadingDialog.show();
 
     }
 
@@ -177,7 +177,7 @@ public class MovieDetailFragment extends Fragment {
                 tvDescription.setText(model.getOverview());
 
                 Glide.with(getContext()).load(ConstantUtils.IMAGE_URL + model.getBackDropPath()).into(ivPoster);
-                mProcessDialog.dismiss();
+                mLoadingDialog.dismiss();
             }
 
             @Override
@@ -198,6 +198,7 @@ public class MovieDetailFragment extends Fragment {
                 List<KeyVideoModel> videoModels = new Gson().fromJson(response.body().get("results").toString(),
                         new TypeToken<List<KeyVideoModel>>() {
                         }.getType());
+                //bug
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 RequestOptions options = new RequestOptions()
                         .placeholder(R.color.colorPrimary)
@@ -266,7 +267,6 @@ public class MovieDetailFragment extends Fragment {
                 mFavorite = !mFavorite;
                 getAccountState(mSessionID, mGuestSessionID);
             }
-
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
 

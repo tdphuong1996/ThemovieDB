@@ -30,8 +30,6 @@ public interface ApiInterface {
     @GET("person/popular" + ConstantUtils.API_KEY)
     Call<JsonObject> getPeople(@QueryMap Map<String, String> options);
 
-    @GET("person/{person_id}" + ConstantUtils.API_KEY)
-    Call<JsonObject> getPeopleDetail(@Path("person_id") int id,@QueryMap Map<String, String> options);
 
     @GET("person/{person_id}/external_ids")
     Call<JsonObject> getExternalIDs(@Path("person_id") int id,@QueryMap Map<String, String> options);
@@ -62,6 +60,24 @@ public interface ApiInterface {
 
     @GET("movie/{movie_id}/reviews"+ConstantUtils.API_KEY)
     Call<JsonObject> getReviews(@Path("movie_id") int idMovie);
+
+    @GET("search/movie"+ConstantUtils.API_KEY)
+    Call<JsonObject> getSearchMovie(@QueryMap Map<String,String> options);
+
+    @GET("person/{person_id}/tagged_images"+ConstantUtils.API_KEY)
+     Call<JsonObject> getTaggerImage(@Path("person_id") int id,@QueryMap Map<String, String> options);
+
+    @GET("person/{person_id}/images"+ConstantUtils.API_KEY)
+    Call<JsonObject> getImagePeople(@Path("person_id") int id);
+
+    @GET("person/{person_id}/movie_credits"+ConstantUtils.API_KEY)
+    Call<JsonObject> getPeopleMovieCredits(@Path("person_id") int id,@QueryMap Map<String, String> options);
+
+    @GET("person/{person_id}" + ConstantUtils.API_KEY)
+    Call<JsonObject> getPeopleDetail(@Path("person_id") int id,@QueryMap Map<String, String> options);
+
+    @GET("/person/{person_id}/tagged_images"+ConstantUtils.API_KEY)
+    Call<JsonObject> gettagImage(@Path("person_id") int id);
 
 
 }

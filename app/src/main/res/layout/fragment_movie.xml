@@ -1,32 +1,50 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     tools:context="com.appscyclone.themoviedb.fragment.MovieFragment">
-   <FrameLayout
-       android:background="@color/colorPrimary"
-       android:layout_width="match_parent"
-       android:layout_height="@dimen/_40sdp">
-       <TextView
-           android:gravity="center"
-           android:textColor="@color/colorBlueLight"
-           android:text="@string/movie"
-           android:textSize="18sp"
-           android:layout_width="match_parent"
-           android:layout_height="match_parent" />
-   </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        android:background="@color/colorPrimary">
+
+        <TextView
+            android:id="@+id/fragMovie_tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/movie"
+            android:textColor="@color/colorBlueLight"
+            android:textSize="18sp"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/fragMovie_ivSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:src="@drawable/ic_search_1"
+            android:tint="@color/colorBlueLight"
+            android:visibility="visible"
+            tools:ignore="RtlHardcoded" />
+
+    </FrameLayout>
+
     <android.support.design.widget.TabLayout
-        app:tabTextColor="@android:color/white"
-        app:tabSelectedTextColor="@color/colorBlueLight"
-        app:tabIndicatorColor="@color/colorBlueLight"
-        android:background="@color/colorPrimary"
         android:id="@+id/fragMovie_tabLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        app:tabIndicatorColor="@color/colorBlueLight"
+        app:tabSelectedTextColor="@color/colorBlueLight"
+        app:tabTextColor="@android:color/white" />
+
     <android.support.v4.view.ViewPager
         android:id="@+id/fragMovie_viewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 </LinearLayout>

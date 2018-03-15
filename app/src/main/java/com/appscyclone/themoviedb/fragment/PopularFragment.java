@@ -17,6 +17,7 @@ import com.appscyclone.themoviedb.interfaces.OnClickItemListener;
 import com.appscyclone.themoviedb.model.ItemMovieModel;
 import com.appscyclone.themoviedb.networks.ApiInterface;
 import com.appscyclone.themoviedb.networks.ApiUtils;
+import com.appscyclone.themoviedb.other.LoadingDialog;
 import com.appscyclone.themoviedb.utils.ConstantUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -44,6 +45,7 @@ public class PopularFragment extends Fragment implements OnClickItemListener {
     private List<ItemMovieModel> mMovieList;
     private int mPage=1;
     private boolean isLoading=false;
+    private LoadingDialog mLoadingDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,7 +57,8 @@ public class PopularFragment extends Fragment implements OnClickItemListener {
     }
 
     private void init() {
-
+        mLoadingDialog=new LoadingDialog(getContext());
+        mLoadingDialog.show();
         mMovieList = new ArrayList<>();
         mMoviesAdapter = new MoviesAdapter(mMovieList,this);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -102,6 +105,7 @@ public class PopularFragment extends Fragment implements OnClickItemListener {
                         new TypeToken<List<ItemMovieModel>>() {
                         }.getType());
                 mMovieList.addAll(list);
+                mLoadingDialog.dismiss();
                 mMoviesAdapter.notifyDataSetChanged();
                 isLoading=false;
                 pbLoadMore.setVisibility(View.GONE);

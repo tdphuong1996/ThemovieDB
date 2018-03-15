@@ -12,12 +12,12 @@ import android.view.ViewGroup;
 
 import com.appscyclone.themoviedb.R;
 import com.appscyclone.themoviedb.activity.MainActivity;
-import com.appscyclone.themoviedb.adapter.MovieAdapter;
+import com.appscyclone.themoviedb.adapter.MoviesAdapter;
 import com.appscyclone.themoviedb.interfaces.OnClickItemListener;
 import com.appscyclone.themoviedb.model.ItemMovieModel;
 import com.appscyclone.themoviedb.networks.ApiInterface;
 import com.appscyclone.themoviedb.networks.ApiUtils;
-import com.appscyclone.themoviedb.other.ProcessDialog;
+import com.appscyclone.themoviedb.other.LoadingDialog;
 import com.appscyclone.themoviedb.utils.ConstantUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -39,10 +39,10 @@ public class FavoriteFragment extends Fragment implements OnClickItemListener {
     @BindView(R.id.fragFavorite_rvFavoriteList)
     RecyclerView rvFavoriteList;
 
-    private MovieAdapter mMovieAdapter;
+    private MoviesAdapter mMovieAdapter;
     private List<ItemMovieModel> mMovieList;
 
-    private ProcessDialog mProcessDialog;
+    private LoadingDialog mLoadingDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,14 +55,13 @@ public class FavoriteFragment extends Fragment implements OnClickItemListener {
 
     private void init() {
         mMovieList = new ArrayList<>();
-        mMovieAdapter = new MovieAdapter(mMovieList,this);
+        mMovieAdapter = new MoviesAdapter(mMovieList,this);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rvFavoriteList.setLayoutManager(layoutManager);
         rvFavoriteList.setAdapter(mMovieAdapter);
-        mProcessDialog=new ProcessDialog(getContext(),getString(R.string.loading));
-        mProcessDialog.show();
-        mProcessDialog.setCanceledOnTouchOutside(true);
+        mLoadingDialog=new LoadingDialog(getContext());
+        mLoadingDialog.show();
         getFavorite(1);
 
     }
@@ -85,7 +84,7 @@ public class FavoriteFragment extends Fragment implements OnClickItemListener {
                         }.getType());
                 mMovieList.addAll(list);
                 mMovieAdapter.notifyDataSetChanged();
-                mProcessDialog.dismiss();
+                mLoadingDialog.dismiss();
             }
 
             @Override

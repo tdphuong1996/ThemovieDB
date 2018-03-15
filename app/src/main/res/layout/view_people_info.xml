@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/biography" />
+
+    <TextView
+        android:id="@+id/fragPeopleDetail_tvBiography"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/fragPeopleDetail_tvBorn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/born" />
+
+    <TextView
+        android:id="@+id/fragPeopleDetail_tvBirthPlace"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/birthplace" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/warmGrey"
+        android:orientation="vertical"
+        android:padding="@dimen/_16sdp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Images" />
+
+        <HorizontalScrollView
+            android:id="@+id/fragPeopleDetail_hsView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible">
+
+            <LinearLayout
+                android:id="@+id/fragPeopleDetail_llImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+
+        </HorizontalScrollView>
+    </LinearLayout>
+</LinearLayout>
