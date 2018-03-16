@@ -39,6 +39,8 @@ public class PeopleFragment extends Fragment implements OnClickItemListener {
     RecyclerView rvPeopleList;
     private List<PeopleModel> mPeopleList;
     private PeopleAdapter mPeopleAdapter;
+    private boolean isLoading=false;
+    private int mPage=1;
     private LoadingDialog mLoadingDialog;
 
     @Override
@@ -53,17 +55,42 @@ public class PeopleFragment extends Fragment implements OnClickItemListener {
     private void init() {
         mPeopleList = new ArrayList<>();
         rvPeopleList.setHasFixedSize(true);
-        rvPeopleList.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        GridLayoutManager layoutManager=new GridLayoutManager(getContext(),2);
+        rvPeopleList.setLayoutManager(layoutManager);
         mPeopleAdapter = new PeopleAdapter(mPeopleList,this);
         rvPeopleList.setAdapter(mPeopleAdapter);
-        loadPeople();
+        loadPeople(mPage);
         mLoadingDialog=new LoadingDialog(getContext());
         mLoadingDialog.show();
+
+        //-------Load more-------------------------
+        RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+            int pastVisiblesItems, visibleItemCount, totalItemCount;
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                visibleItemCount = layoutManager.getChildCount();
+                totalItemCount = layoutManager.getItemCount();
+                pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+
+                if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+
+                    if (!isLoading) {
+                        mPage++;
+                        loadPeople(mPage);
+                        isLoading = true;
+                    }
+
+                }
+            }
+        };
+        rvPeopleList.addOnScrollListener(onScrollListener);
     }
 
-    private void loadPeople() {
+    private void loadPeople(int page) {
         Map<String, String> mapPeople = new HashMap<>();
-        mapPeople.put(ConstantUtils.PAGE, String.valueOf(1));
+        mapPeople.put(ConstantUtils.PAGE, String.valueOf(page));
         mapPeople.put(ConstantUtils.LANGUAGE, ConstantUtils.EN_US);
         ApiInterface apiInterface = ApiUtils.getSOService();
         Call<JsonObject> call = apiInterface.getPeople(mapPeople);

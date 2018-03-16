@@ -46,14 +46,14 @@ public class PeopleInfoFragment extends android.support.v4.app.Fragment {
     LinearLayout llImage;
 
 
-//    public static PeopleInfoFragment newInstance(PeopleDetailModel model) {
-//
-//        Bundle args = new Bundle();
-//        args.putSerializable(ConstantUtils.INFO_PEOPLE, model);
-//        PeopleInfoFragment fragment = new PeopleInfoFragment();
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
+    public static PeopleInfoFragment newInstance(PeopleDetailModel model) {
+
+        Bundle args = new Bundle();
+        args.putSerializable(ConstantUtils.INFO_PEOPLE, model);
+        PeopleInfoFragment fragment = new PeopleInfoFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Nullable
     @Override

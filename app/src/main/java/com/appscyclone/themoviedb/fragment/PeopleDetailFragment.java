@@ -2,12 +2,15 @@ package com.appscyclone.themoviedb.fragment;
 
 
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.appscyclone.themoviedb.R;
@@ -29,6 +32,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -39,6 +43,8 @@ import ss.com.bannerslider.views.BannerSlider;
 
 public class PeopleDetailFragment extends Fragment {
 
+    @BindView(R.id.fragPeopleDetails_ctLayout)
+    CollapsingToolbarLayout collapsingToolbar;
     @BindView(R.id.fragPeopleDetail_tabLayout)
     TabLayout tabLayout;
     @BindView(R.id.fragPeopleDetail_viewPager)
@@ -49,6 +55,8 @@ public class PeopleDetailFragment extends Fragment {
     TextView tvName;
     @BindView(R.id.fragPeopleDetail_ivPoster)
     BannerSlider bannerSlider;
+    @BindView(R.id.viewAvatar_llContent)
+    LinearLayout llContent;
 
     private PeopleDetailModel mPeopleDetail;
 //
@@ -74,10 +82,24 @@ public class PeopleDetailFragment extends Fragment {
     }
 
     private void init() {
+        setToolbar();
         Bundle bundle = getArguments();
         mIDPeople = bundle.getInt(ConstantUtils.ID_PEOPLE);
         loadPeopleDetail(mIDPeople);
         getTagImage(mIDPeople);
+    }
+
+    @OnClick(R.id.fragPeopleDetails_ivBack)
+    public void onClick(){
+        getActivity().getSupportFragmentManager().popBackStack();
+    }
+    private void setToolbar() {
+        collapsingToolbar.setContentScrimColor(ContextCompat.getColor(getContext(), R.color.red));
+        collapsingToolbar.setTitle(getString(R.string.people_detail));
+        collapsingToolbar.setCollapsedTitleTextAppearance(R.style.CollapsedToolbar);
+        collapsingToolbar.setExpandedTitleTextAppearance(R.style.ExpandedToolbar);
+        collapsingToolbar.setTitleEnabled(true);
+
     }
 
     private void loadPeopleDetail(int idPeople) {
@@ -92,12 +114,8 @@ public class PeopleDetailFragment extends Fragment {
                 tvName.setText(mPeopleDetail.getName());
                 Glide.with(getContext()).load(ConstantUtils.IMAGE_URL+mPeopleDetail.getProfilePath()).into(ivAvatar);
                 PageAdapter mPageAdapter = new PageAdapter(getActivity().getSupportFragmentManager());
-                PeopleInfoFragment peopleInfoFragment=new PeopleInfoFragment();
-                Bundle bundle1=new Bundle();
-                bundle1.putSerializable(ConstantUtils.INFO_PEOPLE,mPeopleDetail);
-                peopleInfoFragment.setArguments(bundle1);
-                mPageAdapter.addFragment( peopleInfoFragment, "INFO");
-                mPageAdapter.addFragment(new PeopleMovieFragment(), "MOVIES");
+                mPageAdapter.addFragment( PeopleInfoFragment.newInstance(mPeopleDetail), "INFO");
+                mPageAdapter.addFragment( PeopleMovieFragment.newInstance(mIDPeople), "MOVIES");
                 viewPager.setAdapter(mPageAdapter);
                 tabLayout.setupWithViewPager(viewPager);
             }
@@ -120,12 +138,16 @@ public class PeopleDetailFragment extends Fragment {
                 List<ImageTagModel> list = new Gson().fromJson(response.body().get("results").toString(),
                         new TypeToken<List<ImageTagModel>>() {
                         }.getType());
-
-                List<Banner> bannerList=new ArrayList<>();
-                for(int i=0;i<8;i++){
-                    bannerList.add(new RemoteBanner(ConstantUtils.IMAGE_URL+list.get(i).getFilePath()));
+                if(list!=null){
+                    List<Banner> bannerList=new ArrayList<>();
+                    int size=list.size()<8?list.size():8;
+                    for(int i=0;i<size;i++){
+                        bannerList.add(new RemoteBanner(ConstantUtils.IMAGE_URL+list.get(i).getFilePath()));
+                    }
+                    bannerSlider.setBanners(bannerList);
+                }else {
                 }
-                bannerSlider.setBanners(bannerList);
+
 
             }
 

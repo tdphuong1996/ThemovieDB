@@ -94,6 +94,15 @@ public class MovieDetailFragment extends Fragment {
     private ReviewsAdapter mReviewsAdapter;
     private List<ReviewModel> mReviewList;
 
+    public static MovieDetailFragment newInstance(int idMovie) {
+
+        Bundle args = new Bundle();
+        args.putInt("id",idMovie);
+        MovieDetailFragment fragment = new MovieDetailFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
