@@ -126,8 +126,8 @@ public class PopularFragment extends Fragment implements OnClickItemListener {
         bundle.putInt("id", mMovieList.get(position).getId());
         fragment.setArguments(bundle);
         getActivity().getSupportFragmentManager().beginTransaction().addToBackStack("abc").add(R.id.actMain_layout_Frag, fragment).commit();
-        if(getActivity() instanceof MainActivity)
-            ((MainActivity) getActivity()).setHideBottomBar(false);
+            if(getActivity() instanceof MainActivity)
+                ((MainActivity) getActivity()).setHideBottomBar(false);
 
     }
 }

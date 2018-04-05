@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ import com.appscyclone.themoviedb.activity.MainActivity;
 import com.appscyclone.themoviedb.adapter.ReviewsAdapter;
 import com.appscyclone.themoviedb.model.KeyVideoModel;
 import com.appscyclone.themoviedb.model.MarkFavoriteModel;
+import com.appscyclone.themoviedb.model.MessageModel;
 import com.appscyclone.themoviedb.model.MovieDetailModel;
 import com.appscyclone.themoviedb.model.ReviewModel;
 import com.appscyclone.themoviedb.networks.ApiInterface;
@@ -55,7 +57,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class MovieDetailFragment extends Fragment {
+public class MovieDetailFragment extends Fragment implements RatingBar.OnRatingBarChangeListener{
 
     @BindView(R.id.fragMovieDetails_collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbar;
@@ -84,6 +86,8 @@ public class MovieDetailFragment extends Fragment {
     RecyclerView rvListReviews;
     @BindView(R.id.fragMovieDetail_fabFavorite)
     FloatingActionButton fabFavorite;
+    @BindView(R.id.fragMovieDetail_rtRate)
+    RatingBar rtRate;
 
     private int mMovieID;
     private String urlYoutube, mSessionID, mGuestSessionID;
@@ -142,6 +146,8 @@ public class MovieDetailFragment extends Fragment {
         loadReview();
         mLoadingDialog.show();
 
+        rtRate.setOnRatingBarChangeListener(this);
+
     }
 
     private void setToolbar() {
@@ -184,7 +190,6 @@ public class MovieDetailFragment extends Fragment {
                 tvYear.setText(String.format(getString(R.string.release_date), model.getReleaseDate()));
                 tvName.setText(model.getTitle());
                 tvDescription.setText(model.getOverview());
-
                 Glide.with(getContext()).load(ConstantUtils.IMAGE_URL + model.getBackDropPath()).into(ivPoster);
                 mLoadingDialog.dismiss();
             }
@@ -310,5 +315,36 @@ public class MovieDetailFragment extends Fragment {
         String videoUrl = (String) view.getTag(R.id.glide_tag);
         Intent playVideoIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(videoUrl));
         startActivity(playVideoIntent);
+    }
+
+    private void setRating(float value){
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences(ConstantUtils.ACCOUNT_ID,Context.MODE_PRIVATE);
+        String guest_session_id=sharedPreferences.getString(ConstantUtils.GUEST_SESSION_ID,"");
+        String session_id=sharedPreferences.getString(ConstantUtils.SESSION_ID,"");
+        Map<String,String> map=new HashMap<>();
+        map.put(ConstantUtils.SESSION_ID,session_id);
+        map.put(ConstantUtils.GUEST_SESSION_ID,guest_session_id);
+        Map<String,Float> map1=new HashMap<>();
+        map1.put("value",value);
+
+        ApiInterface apiInterface=ApiUtils.getSOService();
+        Call<JsonObject> call=apiInterface.setRating(mMovieID,map1,map);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                MessageModel messageModel=new Gson().fromJson(response.body(),MessageModel.class);
+                Toast.makeText(getContext(), messageModel.getSttMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
+        setRating(v*2);
     }
 }

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white"
     android:clickable="true"
     android:id="@+id/fragPeopleDetail_cdlContent"
@@ -13,7 +14,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/fragMovieDetails_appbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_280sdp"
+        android:layout_height="@dimen/_250sdp"
         android:elevation="4dp">
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/fragPeopleDetails_ctLayout"
@@ -79,5 +80,32 @@
 
        </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:layout_gravity="bottom|end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            fab:fab_title="@string/facebook"
+            android:id="@+id/fragPeopleDetail_flbFb"
+            fab:fab_icon="@drawable/ic_facebook"
+            app:fab_addButtonSize="mini"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"/>
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            fab:fab_title="@string/instagram"
+            android:tint="@android:color/white"
+            android:id="@+id/fragPeopleDetail_flbinst"
+            fab:fab_icon="@drawable/ic_instagram"
+            app:fab_addButtonSize="mini"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"/>
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            fab:fab_title="@string/twitter"
+            android:id="@+id/fragPeopleDetail_flbtwitter"
+            android:tint="@android:color/white"
+            fab:fab_icon="@drawable/ic_twitter"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"/>
 
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
 </android.support.design.widget.CoordinatorLayout>

@@ -3,13 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:background="@android:color/black"
+    android:background="@drawable/login_thumb_image"
     android:orientation="vertical"
     tools:context="com.appscyclone.themoviedb.fragment.UsersFragment">
-    <ImageView
-        android:background="@android:color/holo_blue_light"
+    <TextView
+        android:gravity="center"
+        android:textSize="60sp"
+        android:textColor="@android:color/white"
+        android:text="KS"
+        android:background="@drawable/shape_oval"
         android:layout_gravity="center"
-        android:id="@+id/fragUser_ivAvatar"
+        android:id="@+id/fragUser_tvAvatar"
         android:layout_width="@dimen/_120sdp"
         android:layout_height="@dimen/_120sdp" />
     <TextView

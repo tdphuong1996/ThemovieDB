@@ -20,6 +20,7 @@ public class ReviewModel {
     public String getContent() {
         return content;
     }
+
      public String getTextAvatar(){
         String [] split =author.split("\\s");
         int size =split.length;
@@ -30,7 +31,6 @@ public class ReviewModel {
         }
         return first+last;
      }
-
 }
 
 

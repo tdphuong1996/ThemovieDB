@@ -31,7 +31,7 @@ public interface ApiInterface {
     Call<JsonObject> getPeople(@QueryMap Map<String, String> options);
 
 
-    @GET("person/{person_id}/external_ids")
+    @GET("person/{person_id}/external_ids"+ConstantUtils.API_KEY)
     Call<JsonObject> getExternalIDs(@Path("person_id") int id,@QueryMap Map<String, String> options);
 
     @GET("authentication/token/new"+ConstantUtils.API_KEY)
@@ -76,8 +76,11 @@ public interface ApiInterface {
     @GET("person/{person_id}" + ConstantUtils.API_KEY)
     Call<JsonObject> getPeopleDetail(@Path("person_id") int id,@QueryMap Map<String, String> options);
 
-    @GET("/person/{person_id}/tagged_images"+ConstantUtils.API_KEY)
+    @GET("person/{person_id}/tagged_images"+ConstantUtils.API_KEY)
     Call<JsonObject> gettagImage(@Path("person_id") int id);
+
+    @POST("movie/{movie_id}/rating"+ConstantUtils.API_KEY)
+    Call<JsonObject> setRating(@Path("movie_id")int id, @Body Map<String,Float>  value, @QueryMap Map<String,String > options);
 
 
 }

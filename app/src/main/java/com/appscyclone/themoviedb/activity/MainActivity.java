@@ -1,19 +1,15 @@
 package com.appscyclone.themoviedb.activity;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.internal.BottomNavigationMenuView;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -31,9 +27,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -42,7 +36,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends ActivityBase implements  BottomNavigationView.OnNavigationItemSelectedListener{
+public class  MainActivity extends ActivityBase implements  BottomNavigationView.OnNavigationItemSelectedListener{
 
     @BindView(R.id.actMain_bottomNavi)
     BottomNavigationView bottomNavi;
@@ -72,19 +66,6 @@ public class MainActivity extends ActivityBase implements  BottomNavigationView.
         removeShiftMode(bottomNavi);
         bottomNavi.setOnNavigationItemSelectedListener(this);
 
-        String[] permissions = new String[]{
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-        };
-        List<String> listPermissionsNeeded = new ArrayList<>();
-        for (String permission : permissions) {
-            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                listPermissionsNeeded.add(permission);
-            }
-        }
-        if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), 1);
-        }
 
     }
 
@@ -138,7 +119,7 @@ public class MainActivity extends ActivityBase implements  BottomNavigationView.
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        setHideBottomBar(false);
+        setHideBottomBar(true);
     }
 
     @Override

@@ -24,7 +24,7 @@ public class MovieDetailModel {
     @SerializedName("title")
     private String title;
     @SerializedName("vote_average")
-    private double voteAverage;
+    private float voteAverage;
     @SerializedName("backdrop_path")
     private String backDropPath;
     @SerializedName( "release_date")
@@ -58,7 +58,7 @@ public class MovieDetailModel {
         this.title = title;
     }
 
-    public double getVoteAverage() {
+    public float getVoteAverage() {
         return voteAverage;
     }
 
@@ -66,7 +66,7 @@ public class MovieDetailModel {
         return releaseDate;
     }
 
-    public void setVoteAverage(Double voteAverage) {
+    public void setVoteAverage(float voteAverage) {
         this.voteAverage = voteAverage;
     }
 

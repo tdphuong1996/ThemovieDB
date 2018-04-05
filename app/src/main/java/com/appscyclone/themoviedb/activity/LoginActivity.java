@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -75,7 +74,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        tvVia.setText(Html.fromHtml(getString(R.string.sign_up_via_website_themoviedb_org)));
     }
 
     public void checkLogIn(String user, String pass) {
